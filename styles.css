@@ -1,22 +1,31 @@
     :root {
-      --bg-outer: #102a43;
-      --bg-panel: #183b4e;
-      --bg-parchment: #f4f3e8;
-      --border-dark: #09212f;
-      --accent-gold: #f4c95d;
-      --accent-emerald: #2a9d8f;
-      --accent-rose: #e76f51;
-      --accent-sky: #5da9b2;
-      --map-land: #a3c995;
-      --map-outline: #34675a;
+      --bg-outer: #161f30;
+      --bg-panel: #1b263b;
+      --bg-parchment: #f4ecd8;
+      --border-dark: #0d1321;
+      --accent-gold: #fbbf24;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-sky: #0284c7;
+      --map-land: #baffc9;
+      --map-outline: #315746;
     }
 
     body {
-      font-family: 'Space Mono', monospace;
+      font-family: Consolas, "Courier New", monospace;
       background-color: var(--bg-outer);
       color: #f8fafc;
       margin: 0;
       overflow-x: hidden;
+      transition: background-color 0.18s ease;
+    }
+
+    body.answer-correct {
+      background-color: #064e3b;
+    }
+
+    body.answer-wrong {
+      background-color: #7f1d1d;
     }
 
     body.min-h-screen {
@@ -25,33 +34,8 @@
     }
 
     .font-pixel {
-      font-family: 'Press Start 2P', monospace;
-      line-height: 1.5;
-    }
-
-    /* Retro Arcade Box Frame & Hard Drop Shadow */
-    .retro-box {
-      background-color: var(--bg-panel);
-      border: 3px solid var(--border-dark);
-      box-shadow: 4px 4px 0px var(--border-dark);
-    }
-
-    #feedback-modal {
-      background-color: rgba(9, 33, 47, 0.42);
-    }
-
-    #feedback-modal .retro-box {
-      max-width: 20rem;
-      max-height: calc(100dvh - 2rem);
-      overflow-y: auto;
-    }
-
-    #feedback-modal #modal-banner {
-      padding: 0.75rem 1rem;
-    }
-
-    #feedback-modal .retro-box > div:last-child {
-      padding: 1rem;
+      font-family: Consolas, "Courier New", monospace;
+      line-height: 1.4;
     }
 
     .retro-parchment {
@@ -64,13 +48,75 @@
     .hud-header {
       position: relative;
       z-index: 1;
+      padding-top: 12px;
     }
 
     .hud-panel {
+      max-width: 56rem;
+      margin: 0 auto;
       padding: 0;
       border: 0;
-      background: none;
+      background: transparent;
       box-shadow: none;
+    }
+
+    .hud-status-row {
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #334155;
+    }
+
+    .hud-controls {
+      gap: 8px;
+    }
+
+    .hud-status-row .bg-slate-900 {
+      border-color: #020617;
+      border-radius: 4px;
+      background: #0f172a;
+      color: #a7f3d0;
+    }
+
+    .hud-status-row .text-sky-300 {
+      color: #7dd3fc;
+    }
+
+    .hud-status-row .bg-amber-400 {
+      border: 3px solid var(--border-dark);
+      border-radius: 4px;
+      background: var(--accent-gold);
+      box-shadow: 3px 3px 0 var(--border-dark);
+      color: #0f172a;
+    }
+
+    .hud-question {
+      padding-top: 12px;
+      padding-left: 16px;
+    }
+
+    #question-text {
+      margin: 0;
+      color: #f8fafc;
+      font-size: clamp(1.35rem, 4vw, 2rem);
+    }
+
+    .progress-track {
+      height: 12px;
+      margin: 2px 0 4px;
+      overflow: hidden;
+      border: 2px solid var(--border-dark);
+      border-radius: 3px;
+      background: #0f172a;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      border-radius: 0;
+      background: var(--accent-emerald);
+      transition: width 0.3s ease;
     }
 
     .map-shell {
@@ -79,7 +125,8 @@
     }
 
     .map-svg {
-      max-height: calc(100vh - 100px);
+      max-height: calc(100vh - 230px);
+      max-height: calc(100dvh - 230px);
       cursor: pointer;
       touch-action: manipulation;
     }
@@ -104,12 +151,12 @@
       .hud-controls > *,
       .hud-score {
         display: inline-flex;
-        min-height: 40px;
+        min-height: 44px;
         align-items: center;
         justify-content: center;
         gap: 4px;
-        padding: 6px 9px;
-        font-size: 12px;
+        padding: 8px 10px;
+        font-size: 14px;
       }
 
       .map-shell {
@@ -120,7 +167,8 @@
 
       .map-svg {
         width: 100%;
-        max-height: calc(100vh - 110px);
+        max-height: calc(100vh - 230px);
+        max-height: calc(100dvh - 230px);
       }
 
       .mobile-map-main {
@@ -137,7 +185,8 @@
       .mobile-map-main .map-svg {
         width: 103%;
         height: auto;
-        max-height: calc(100vh - 110px);
+        max-height: calc(100vh - 230px);
+        max-height: calc(100dvh - 230px);
         transform: translate(-1.5%, -10px);
       }
     }
@@ -145,10 +194,14 @@
     /* Tactile Arcade Buttons */
     .retro-btn {
       border: 3px solid var(--border-dark);
-      box-shadow: 3px 3px 0px var(--border-dark);
+      border-radius: 4px;
+      box-shadow: 3px 3px 0 var(--border-dark);
       transition: transform 0.08s ease, box-shadow 0.08s ease;
       cursor: pointer;
       user-select: none;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
     }
 
     .retro-btn:hover {
@@ -157,68 +210,47 @@
 
     .retro-btn:active {
       transform: translate(3px, 3px);
-      box-shadow: 0px 0px 0px var(--border-dark);
+      box-shadow: 0 0 0 var(--border-dark);
     }
 
-    .bg-emerald-400 {
-      background-color: var(--accent-emerald);
-    }
-
-    .bg-emerald-600 {
-      background-color: #1d756b;
+    .crt-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 3px,
+        rgba(13, 19, 33, 0.035) 4px
+      );
     }
 
     .bg-amber-400 {
       background-color: var(--accent-gold);
     }
 
-    .bg-rose-500 {
-      background-color: var(--accent-rose);
-    }
-
-    .bg-rose-600 {
-      background-color: #c94f50;
-    }
-
     .text-emerald-400 {
-      color: #67d7c0;
+      color: #34d399;
     }
 
-    .text-amber-400 {
-      color: var(--accent-gold);
-    }
-
-    /* Subtle CRT Scanlines Overlay (strictly non-interactive) */
-    .crt-overlay {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 40;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 0px,
-        rgba(0, 0, 0, 0) 3px,
-        rgba(13, 19, 33, 0.07) 4px
-      );
+    .retro-btn.bg-amber-400 {
+      box-shadow: 3px 3px 0 #92400e;
     }
 
     /* India Map SVG Styling */
     .state-path {
-      fill: var(--map-land);
-      stroke: var(--map-outline);
-      stroke-width: 1.35;
+      fill: var(--state-color, var(--map-land));
+      stroke: #111827;
+      stroke-width: 1.6;
       stroke-linejoin: round;
-      transition: fill 0.15s ease;
+      transition: fill 0.2s ease, filter 0.2s ease;
       cursor: pointer;
     }
 
-    .state-path:hover {
-      fill: #c5dda9;
-    }
-
     .island-path {
-      fill: var(--map-land);
-      stroke: var(--map-outline);
+      fill: var(--state-color, var(--map-land));
+      stroke: #111827;
       stroke-width: 1.2;
     }
 

@@ -41,16 +41,39 @@
       return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
     }
 
+    const STATE_REGIONS = [
+      { name: "North India", states: ["haryana", "himachal pradesh", "punjab", "uttar pradesh", "uttarakhand"] },
+      { name: "West-Central India", states: ["chhattisgarh", "goa", "gujarat", "madhya pradesh", "maharashtra", "rajasthan"] },
+      { name: "East India", states: ["bihar", "jharkhand", "odisha", "west bengal"] },
+      { name: "South India", states: ["andhra pradesh", "karnataka", "kerala", "tamil nadu", "telangana"] },
+      { name: "Northeast India", states: ["arunachal pradesh", "assam", "manipur", "meghalaya", "mizoram", "nagaland", "sikkim", "tripura"] }
+    ];
+
+    const MAP_COLORS = [
+      "#d46b76", "#d79a5c", "#c8b957", "#5b9c7a"
+    ];
+
     function createStateDeck() {
-      return window.INDIA_STATE_BOUNDARIES.map(({ name }) => {
+      const stateById = new Map(window.INDIA_STATE_BOUNDARIES.map(({ name }) => {
+        const id = normalizeStateName(name);
         const state = STATE_LEARNING_INFO[normalizeStateName(name)];
         if (!state) throw new Error(`Missing learning information for map feature: ${name}`);
-        return {
+        return [id, {
           ...state,
-          id: normalizeStateName(name),
+          id,
           question: `Find ${state.name} on the map.`
-        };
+        }];
+      }));
+      const region = shuffleArray(STATE_REGIONS)[0];
+      const candidates = region.states.map((id) => {
+        const state = stateById.get(id);
+        if (!state || state.type !== "State") throw new Error(`Invalid state in ${region.name}: ${id}`);
+        return state;
       });
+
+      return {
+        states: shuffleArray(candidates).slice(0, 4)
+      };
     }
     // ================= RETRO 8-BIT WEB AUDIO SYNTHESIZER =================
     let audioCtx = null;
@@ -108,32 +131,16 @@
     let deck = [];
     let currentIndex = 0;
     let score = 0;
-    let solvedIds = new Set();
-    let isModalOpen = false;
-    let currentQuestionFailedOnce = false;
+    let answerLocked = false;
+    let answerFeedbackTimer = null;
 
     const stageVal = document.getElementById("stage-val");
     const scoreVal = document.getElementById("score-val");
+    const progressTrack = document.querySelector(".progress-track");
+    const progressFill = document.getElementById("progress-fill");
     const questionText = document.getElementById("question-text");
     const indiaMap = document.getElementById("india-map");
 
-    const feedbackModal = document.getElementById("feedback-modal");
-    const modalBanner = document.getElementById("modal-banner");
-    const modalVerdict = document.getElementById("modal-verdict");
-    const modalTag = document.getElementById("modal-tag");
-
-    const trueContent = document.getElementById("true-content");
-    const falseContent = document.getElementById("false-content");
-    const victoryContent = document.getElementById("victory-content");
-
-    const infoName = document.getElementById("info-name");
-    const infoImportance = document.getElementById("info-importance");
-    const infoFood = document.getElementById("info-food");
-    const falseMessage = document.getElementById("false-message");
-    const finalScoreText = document.getElementById("final-score-text");
-    const modalActionBtn = document.getElementById("modal-action-btn");
-
-    const soundBtn = document.getElementById("sound-btn");
     const restartBtn = document.getElementById("restart-btn");
 
     /**
@@ -152,14 +159,12 @@
      * Initializes or completely resets the game state
      */
     function initGame() {
-      deck = shuffleArray(createStateDeck()).slice(0, 5);
+      const quiz = createStateDeck();
+      deck = quiz.states;
       currentIndex = 0;
       score = 0;
-      solvedIds.clear();
-      isModalOpen = false;
-      currentQuestionFailedOnce = false;
 
-      closeModal();
+      clearAnswerFeedback();
       updateHUD();
       renderStateBoundaries();
       displayCurrentQuestion();
@@ -169,13 +174,18 @@
       const statesLayer = document.getElementById("states-layer");
       if (!statesLayer || !window.INDIA_STATE_BOUNDARIES) return;
 
+      const selectedStateColors = new Map(
+        deck.map((state, index) => [state.id, MAP_COLORS[index % MAP_COLORS.length]])
+      );
       statesLayer.innerHTML = "";
       const svgNS = "http://www.w3.org/2000/svg";
       window.INDIA_STATE_BOUNDARIES.forEach((state) => {
         const path = document.createElementNS(svgNS, "path");
+        const stateId = normalizeStateName(state.name);
         path.setAttribute("d", state.path);
         path.setAttribute("class", "state-path");
-        path.setAttribute("data-state", normalizeStateName(state.name));
+        path.setAttribute("data-state", stateId);
+        path.style.setProperty("--state-color", selectedStateColors.get(stateId) || "#b8bec7");
         statesLayer.appendChild(path);
       });
     }
@@ -184,20 +194,43 @@
       const displayStage = Math.min(currentIndex + 1, deck.length);
       stageVal.textContent = `${displayStage}/${deck.length}`;
       scoreVal.textContent = score;
+      progressFill.style.width = `${(score / deck.length) * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", score);
     }
 
     function displayCurrentQuestion() {
       if (currentIndex >= deck.length) {
-        showVictoryModal();
+        questionText.textContent = "FOUR STATES COMPLETE";
+        updateHUD();
         return;
       }
-      currentQuestionFailedOnce = false;
       updateHUD();
-      questionText.textContent = deck[currentIndex].question;
+      questionText.textContent = `Find ${deck[currentIndex].name}`;
+    }
+
+    function clearAnswerFeedback() {
+      if (answerFeedbackTimer !== null) {
+        window.clearTimeout(answerFeedbackTimer);
+        answerFeedbackTimer = null;
+      }
+      answerLocked = false;
+      document.body.classList.remove("answer-correct", "answer-wrong");
+    }
+
+    function flashAnswerFeedback(className, afterFlash = null) {
+      answerLocked = true;
+      document.body.classList.remove("answer-correct", "answer-wrong");
+      document.body.classList.add(className);
+      answerFeedbackTimer = window.setTimeout(() => {
+        document.body.classList.remove(className);
+        answerFeedbackTimer = null;
+        answerLocked = false;
+        if (afterFlash) afterFlash();
+      }, 500);
     }
 
     function handleMapSelection(event) {
-      if (isModalOpen || currentIndex >= deck.length) return;
+      if (answerLocked || currentIndex >= deck.length) return;
 
       const targetState = deck[currentIndex];
       const selectedPath = event.target.closest(".state-path");
@@ -206,140 +239,25 @@
 
       if (isCorrect) {
         playWinFanfare();
-
-        const pointsEarned = currentQuestionFailedOnce ? 50 : 100;
-        if (!solvedIds.has(targetState.id)) {
-          score += pointsEarned;
-          solvedIds.add(targetState.id);
-        }
-
+        score += 1;
         updateHUD();
-        showTrueModal(targetState, pointsEarned);
+        flashAnswerFeedback("answer-correct", () => {
+          currentIndex += 1;
+          displayCurrentQuestion();
+        });
       } else {
         playFailBuzz();
-        currentQuestionFailedOnce = true;
-        showFalseModal(targetState, selectedStateId);
+        flashAnswerFeedback("answer-wrong");
       }
     }
 
-    function openModal() {
-      isModalOpen = true;
-      feedbackModal.classList.remove("hidden");
-      feedbackModal.classList.add("flex");
-      modalActionBtn.focus();
-    }
-
-    function closeModal() {
-      isModalOpen = false;
-      feedbackModal.classList.add("hidden");
-      feedbackModal.classList.remove("flex");
-    }
-
-    function showTrueModal(place, pointsEarned) {
-      modalBanner.className = "px-5 py-4 border-b-4 border-slate-950 flex items-center justify-between bg-emerald-600 text-white";
-      modalVerdict.textContent = "TRUE! ★";
-      modalTag.textContent = `+${pointsEarned} PTS`;
-      modalTag.classList.remove("hidden");
-
-      infoName.textContent = place.name;
-      infoImportance.textContent = place.capital;
-      infoFood.textContent = place.fact;
-
-      trueContent.classList.remove("hidden");
-      falseContent.classList.add("hidden");
-      victoryContent.classList.add("hidden");
-
-      const isLastQuestion = currentIndex + 1 >= deck.length;
-      modalActionBtn.textContent = isLastQuestion ? "VIEW FINAL SCORE ★" : "NEXT STAGE ►";
-      modalActionBtn.className = "retro-btn w-full py-3.5 rounded font-pixel text-xs text-slate-950 bg-emerald-400";
-
-      modalActionBtn.onclick = () => {
-        playBlip();
-        closeModal();
-        currentIndex += 1;
-        displayCurrentQuestion();
-      };
-
-      openModal();
-    }
-
-    function showFalseModal(targetState, selectedStateId) {
-      modalBanner.className = "px-5 py-4 border-b-4 border-slate-950 flex items-center justify-between bg-rose-600 text-white";
-      modalVerdict.textContent = "FALSE!";
-      modalTag.textContent = "MISS";
-      modalTag.classList.remove("hidden");
-
-      const selectedState = selectedStateId
-        ? STATE_LEARNING_INFO[selectedStateId]
-        : null;
-      falseMessage.textContent = selectedState
-        ? `You tapped ${selectedState.name}. Find ${targetState.name} instead.`
-        : `Tap inside a state or union territory to find ${targetState.name}.`;
-
-      trueContent.classList.add("hidden");
-      falseContent.classList.remove("hidden");
-      victoryContent.classList.add("hidden");
-
-      modalActionBtn.textContent = "TRY AGAIN ↺";
-      modalActionBtn.className = "retro-btn w-full py-3.5 rounded font-pixel text-xs text-white bg-rose-500";
-
-      modalActionBtn.onclick = () => {
-        playBlip();
-        closeModal();
-      };
-
-      openModal();
-    }
-
-    function showVictoryModal() {
-      playWinFanfare();
-      questionText.textContent = "QUEST COMPLETE! You finished all 5 state challenges.";
-
-      modalBanner.className = "px-5 py-4 border-b-4 border-slate-950 flex items-center justify-between bg-amber-400 text-slate-950";
-      modalVerdict.textContent = "VICTORY! 🏆";
-      modalTag.classList.add("hidden");
-
-      finalScoreText.textContent = `${score} / ${deck.length * 100}`;
-
-      trueContent.classList.add("hidden");
-      falseContent.classList.add("hidden");
-      victoryContent.classList.remove("hidden");
-
-      modalActionBtn.textContent = "PLAY AGAIN ↺";
-      modalActionBtn.className = "retro-btn w-full py-3.5 rounded font-pixel text-xs text-slate-950 bg-amber-400";
-
-      modalActionBtn.onclick = () => {
-        playBlip();
-        initGame();
-      };
-
-      openModal();
-    }
-
     // ================= EVENT LISTENERS =================
-    soundBtn.addEventListener("click", () => {
-      isMuted = !isMuted;
-      soundBtn.textContent = isMuted ? "SFX: OFF" : "SFX: ON";
-      soundBtn.classList.toggle("text-amber-200", !isMuted);
-      soundBtn.classList.toggle("text-slate-400", isMuted);
-      if (!isMuted) playBlip();
-    });
-
     restartBtn.addEventListener("click", () => {
       playBlip();
       initGame();
     });
 
     indiaMap.addEventListener("click", handleMapSelection);
-
-    // Keyboard accessibility: Escape closes FALSE modal; Enter triggers modal button
-    document.addEventListener("keydown", (e) => {
-      if (!isModalOpen) return;
-      if (e.key === "Escape" && !falseContent.classList.contains("hidden")) {
-        e.preventDefault();
-        closeModal();
-      }
-    });
 
     // Boot game safely after window loads
     window.onload = initGame;

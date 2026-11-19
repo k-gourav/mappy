@@ -1,3 +1,3 @@
 # Mappy
 
-Mappy is a five-question India map quiz for learning the locations and capitals of states and union territories. Each game randomly selects five of the 36 regions; correct answers reveal the capital and a quick memory tip.
+Mappy is a friendly map game for young children. Each short game asks players to find four states from one region. The four target states use darker colors while the rest of the map is grayscale. Correct and incorrect taps give brief full-screen green or red feedback.
