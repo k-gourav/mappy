@@ -11,37 +11,15 @@
 
   <div class="crt-overlay" aria-hidden="true"></div>
 
-  <!-- Top Arcade HUD Bar -->
   <header class="hud-header w-full max-w-7xl mx-auto px-2 pt-2">
     <div class="hud-panel">
-      <!-- Round progress and controls -->
-      <div class="hud-status-row flex flex-wrap items-center justify-end gap-2 pb-1.5 border-b border-slate-700/80">
-        <div class="hud-controls flex flex-wrap items-center gap-1.5 sm:gap-2">
-          <!-- Progress Badge -->
-          <div class="bg-slate-900 border-2 border-slate-950 px-2 py-0.5 rounded text-[10px] font-bold text-sky-300">
-            ROUND <span id="stage-val">1/4</span>
-          </div>
-
-          <!-- Restart Game Button -->
-          <button id="restart-btn" type="button" class="retro-btn bg-amber-400 text-slate-950 px-2 py-0.5 rounded text-[10px] font-bold">
-            START OVER
-          </button>
-        </div>
-        <div class="hud-score bg-slate-900 border-2 border-slate-950 px-2 py-0.5 rounded text-[10px] font-bold text-emerald-400">
-          FOUND <span id="score-val">0</span>/4
-        </div>
+      <div class="game-controls">
+        <button id="restart-btn" class="start-over-btn" type="button">START OVER</button>
       </div>
-
-      <div class="progress-track" role="progressbar" aria-label="Game progress" aria-valuemin="0" aria-valuemax="4" aria-valuenow="0">
-        <div id="progress-fill" class="progress-fill"></div>
-      </div>
-
       <div class="hud-question pt-1.5 flex items-start gap-2">
-        <div class="min-w-0">
-          <h1 id="question-text" class="text-xl sm:text-2xl font-bold text-white leading-snug">
-            Let's find a state
-          </h1>
-        </div>
+        <h1 id="question-text" class="text-xl sm:text-2xl font-bold text-white leading-snug">
+          Let's find a state
+        </h1>
       </div>
     </div>
   </header>

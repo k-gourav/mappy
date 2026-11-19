@@ -50,7 +50,7 @@
     ];
 
     const MAP_COLORS = [
-      "#d46b76", "#d79a5c", "#c8b957", "#5b9c7a"
+      "#a33f4b", "#a16435", "#8a7a2c", "#347553"
     ];
 
     function createStateDeck() {
@@ -111,10 +111,6 @@
       }
     }
 
-    function playBlip() {
-      playTone(520, 0.05, "square", 0);
-    }
-
     function playWinFanfare() {
       playTone(523.25, 0.09, "square", 0);     // C5
       playTone(659.25, 0.09, "square", 0.09);  // E5
@@ -130,17 +126,11 @@
     // ================= GAME STATE & DOM ELEMENTS =================
     let deck = [];
     let currentIndex = 0;
-    let score = 0;
     let answerLocked = false;
     let answerFeedbackTimer = null;
 
-    const stageVal = document.getElementById("stage-val");
-    const scoreVal = document.getElementById("score-val");
-    const progressTrack = document.querySelector(".progress-track");
-    const progressFill = document.getElementById("progress-fill");
     const questionText = document.getElementById("question-text");
     const indiaMap = document.getElementById("india-map");
-
     const restartBtn = document.getElementById("restart-btn");
 
     /**
@@ -162,10 +152,8 @@
       const quiz = createStateDeck();
       deck = quiz.states;
       currentIndex = 0;
-      score = 0;
 
       clearAnswerFeedback();
-      updateHUD();
       renderStateBoundaries();
       displayCurrentQuestion();
     }
@@ -183,28 +171,21 @@
         const path = document.createElementNS(svgNS, "path");
         const stateId = normalizeStateName(state.name);
         path.setAttribute("d", state.path);
-        path.setAttribute("class", "state-path");
+        path.setAttribute(
+          "class",
+          selectedStateColors.has(stateId) ? "state-path quiz-state" : "state-path"
+        );
         path.setAttribute("data-state", stateId);
         path.style.setProperty("--state-color", selectedStateColors.get(stateId) || "#b8bec7");
         statesLayer.appendChild(path);
       });
     }
 
-    function updateHUD() {
-      const displayStage = Math.min(currentIndex + 1, deck.length);
-      stageVal.textContent = `${displayStage}/${deck.length}`;
-      scoreVal.textContent = score;
-      progressFill.style.width = `${(score / deck.length) * 100}%`;
-      progressTrack.setAttribute("aria-valuenow", score);
-    }
-
     function displayCurrentQuestion() {
       if (currentIndex >= deck.length) {
         questionText.textContent = "FOUR STATES COMPLETE";
-        updateHUD();
         return;
       }
-      updateHUD();
       questionText.textContent = `Find ${deck[currentIndex].name}`;
     }
 
@@ -239,8 +220,6 @@
 
       if (isCorrect) {
         playWinFanfare();
-        score += 1;
-        updateHUD();
         flashAnswerFeedback("answer-correct", () => {
           currentIndex += 1;
           displayCurrentQuestion();
@@ -252,11 +231,7 @@
     }
 
     // ================= EVENT LISTENERS =================
-    restartBtn.addEventListener("click", () => {
-      playBlip();
-      initGame();
-    });
-
+    restartBtn.addEventListener("click", initGame);
     indiaMap.addEventListener("click", handleMapSelection);
 
     // Boot game safely after window loads
