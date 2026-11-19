@@ -53,7 +53,9 @@
       "#a33f4b", "#a16435", "#8a7a2c", "#347553"
     ];
 
-    function createStateDeck() {
+    const LEVEL_STATE_COUNTS = { 1: 2, 2: 3, 3: 4 };
+
+    function createStateDeck(stateCount, previousStateIds = []) {
       const stateById = new Map(window.INDIA_STATE_BOUNDARIES.map(({ name }) => {
         const id = normalizeStateName(name);
         const state = STATE_LEARNING_INFO[normalizeStateName(name)];
@@ -64,16 +66,23 @@
           question: `Find ${state.name} on the map.`
         }];
       }));
-      const region = shuffleArray(STATE_REGIONS)[0];
-      const candidates = region.states.map((id) => {
-        const state = stateById.get(id);
-        if (!state || state.type !== "State") throw new Error(`Invalid state in ${region.name}: ${id}`);
-        return state;
-      });
+      const previousStateSet = new Set(previousStateIds);
+      let states;
 
-      return {
-        states: shuffleArray(candidates).slice(0, 4)
-      };
+      do {
+        const region = shuffleArray(STATE_REGIONS)[0];
+        const candidates = region.states.map((id) => {
+          const state = stateById.get(id);
+          if (!state || state.type !== "State") throw new Error(`Invalid state in ${region.name}: ${id}`);
+          return state;
+        });
+        states = shuffleArray(candidates).slice(0, stateCount);
+      } while (
+        previousStateSet.size === stateCount &&
+        states.every((state) => previousStateSet.has(state.id))
+      );
+
+      return { states };
     }
     // ================= RETRO 8-BIT WEB AUDIO SYNTHESIZER =================
     let audioCtx = null;
@@ -126,12 +135,14 @@
     // ================= GAME STATE & DOM ELEMENTS =================
     let deck = [];
     let currentIndex = 0;
+    let activeLevel = 1;
     let answerLocked = false;
     let answerFeedbackTimer = null;
 
     const questionText = document.getElementById("question-text");
     const indiaMap = document.getElementById("india-map");
     const restartBtn = document.getElementById("restart-btn");
+    const levelTabs = [...document.querySelectorAll(".level-tab")];
 
     /**
      * Fisher-Yates unbiased shuffle
@@ -149,7 +160,8 @@
      * Initializes or completely resets the game state
      */
     function initGame() {
-      const quiz = createStateDeck();
+      const previousStateIds = deck.map((state) => state.id);
+      const quiz = createStateDeck(LEVEL_STATE_COUNTS[activeLevel], previousStateIds);
       deck = quiz.states;
       currentIndex = 0;
 
@@ -182,11 +194,15 @@
     }
 
     function displayCurrentQuestion() {
-      if (currentIndex >= deck.length) {
-        questionText.textContent = "FOUR STATES COMPLETE";
-        return;
-      }
       questionText.textContent = `Find ${deck[currentIndex].name}`;
+    }
+
+    function shuffleStateOrder(states) {
+      const shuffled = shuffleArray(states);
+      if (shuffled.every((state, index) => state.id === states[index].id)) {
+        [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+      }
+      return shuffled;
     }
 
     function clearAnswerFeedback() {
@@ -222,6 +238,10 @@
         playWinFanfare();
         flashAnswerFeedback("answer-correct", () => {
           currentIndex += 1;
+          if (currentIndex === deck.length) {
+            deck = shuffleStateOrder(deck);
+            currentIndex = 0;
+          }
           displayCurrentQuestion();
         });
       } else {
@@ -230,7 +250,18 @@
       }
     }
 
+    function selectLevel(level) {
+      activeLevel = level;
+      levelTabs.forEach((tab) => {
+        tab.setAttribute("aria-pressed", String(Number(tab.dataset.level) === activeLevel));
+      });
+      initGame();
+    }
+
     // ================= EVENT LISTENERS =================
+    levelTabs.forEach((tab) => {
+      tab.addEventListener("click", () => selectLevel(Number(tab.dataset.level)));
+    });
     restartBtn.addEventListener("click", initGame);
     indiaMap.addEventListener("click", handleMapSelection);
 

@@ -55,10 +55,40 @@
       box-shadow: none;
     }
 
-    .game-controls {
+    .top-controls {
       display: flex;
-      justify-content: flex-end;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       padding-right: 8px;
+    }
+
+    .level-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .level-tab {
+      min-width: 56px;
+      min-height: 36px;
+      padding: 6px 8px;
+      border: 2px solid var(--border-dark);
+      border-radius: 3px;
+      background: var(--bg-panel);
+      box-shadow: 2px 2px 0 var(--border-dark);
+      color: #cbd5e1;
+      cursor: pointer;
+      font: 700 12px Consolas, "Courier New", monospace;
+    }
+
+    .level-tab[aria-pressed="true"] {
+      background: var(--accent-emerald);
+      color: #052e25;
+    }
+
+    .level-tab:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 var(--border-dark);
     }
 
     .start-over-btn {
@@ -111,6 +141,10 @@
       }
 
       .start-over-btn {
+        min-height: 44px;
+      }
+
+      .level-tab {
         min-height: 44px;
       }
 
