@@ -44,7 +44,7 @@
       <!-- Active Mission / Question Prompt -->
       <div class="hud-question pt-1.5 flex items-start gap-2">
         <span class="font-pixel text-[10px] text-emerald-400 mt-0.5 shrink-0">&gt;</span>
-        <h1 id="question-text" class="text-base sm:text-lg font-bold text-white leading-snug">
+        <h1 id="question-text" class="text-lg font-bold text-white leading-snug">
           Loading mission coordinates...
         </h1>
       </div>
@@ -52,11 +52,11 @@
   </header>
 
   <!-- Center Interactive Vintage Atlas Map -->
-  <main class="flex-1 flex flex-col items-center justify-center w-full max-w-full mx-auto px-2 py-3 sm:py-4">
+  <main class="mobile-map-main flex-1 flex flex-col items-center justify-center w-full max-w-full mx-auto px-0 sm:px-2 py-3 sm:py-4">
     <div class="map-shell w-full relative">
       
       <!-- Responsive SVG Outline Map of India -->
-      <svg id="india-map" viewBox="65 38 450 474" class="map-svg w-full h-auto select-none block mx-auto" role="img" aria-label="Interactive Map of India">
+      <svg id="india-map" viewBox="65 38 450 474" class="map-svg w-full h-auto select-none block mx-auto" role="img" aria-label="Interactive map of India. Click or tap near the requested location.">
         <!-- Sea Labels -->
         <text x="104" y="435" fill="#9c8964" font-size="11" font-weight="bold" letter-spacing="2">ARABIAN</text>
         <text x="115" y="450" fill="#9c8964" font-size="11" font-weight="bold" letter-spacing="2">SEA</text>
@@ -66,8 +66,6 @@
         <!-- State Outlines -->
         <g id="states-layer" transform="matrix(0.82 0 0 1 51.3 0)"></g>
 
-        <!-- Interactive Pins Layer -->
-        <g id="pins-layer"></g>
       </svg>
 
     </div>
@@ -109,7 +107,7 @@
           <div class="bg-rose-950/60 border-2 border-rose-700/70 p-4 rounded text-center space-y-2">
             <p class="text-xs uppercase tracking-wider text-rose-300 font-bold">Wrong Coordinates!</p>
             <p id="false-message" class="text-sm sm:text-base font-bold text-white"></p>
-            <p class="text-xs text-slate-300">Check the map carefully and pick another pin.</p>
+            <p class="text-xs text-slate-300">Check the map carefully and tap a different location.</p>
           </div>
         </div>
 

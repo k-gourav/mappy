@@ -293,7 +293,7 @@
     const stageVal = document.getElementById("stage-val");
     const scoreVal = document.getElementById("score-val");
     const questionText = document.getElementById("question-text");
-    const pinsLayer = document.getElementById("pins-layer");
+    const indiaMap = document.getElementById("india-map");
 
     const feedbackModal = document.getElementById("feedback-modal");
     const modalBanner = document.getElementById("modal-banner");
@@ -340,7 +340,6 @@
       closeModal();
       updateHUD();
       renderStateBoundaries();
-      renderMapPins();
       displayCurrentQuestion();
     }
 
@@ -376,96 +375,21 @@
     }
 
     /**
-     * Renders crisp SVG pins with generous 16px touch/click hitboxes
+     * Checks whether a map click is close enough to the active location.
      */
-    function renderMapPins() {
-      pinsLayer.innerHTML = "";
-      const svgNS = "http://www.w3.org/2000/svg";
-
-      SYLLABUS_PLACES.forEach((place) => {
-        const isSolved = solvedIds.has(place.id);
-        const pinX = place.x * 0.82 + 51.3;
-        const group = document.createElementNS(svgNS, "g");
-        group.setAttribute("class", `pin-group ${isSolved ? "pin-solved" : ""}`);
-        group.setAttribute("role", "button");
-        group.setAttribute("tabindex", "0");
-        group.setAttribute("aria-label", "Map location pin");
-
-        // Category Color
-        let pinColor = "#e11d48"; // History = Rose Red
-        if (place.category === "dam") pinColor = "#0284c7"; // Dam = Sky Blue
-        if (place.category === "crop") pinColor = "#059669"; // Crop = Emerald Green
-
-        // Subtle pulse ring if already solved
-        if (isSolved) {
-          const pulse = document.createElementNS(svgNS, "circle");
-          pulse.setAttribute("cx", pinX);
-          pulse.setAttribute("cy", place.y);
-          pulse.setAttribute("r", "9");
-          pulse.setAttribute("fill", "none");
-          pulse.setAttribute("stroke", "#d97706");
-          pulse.setAttribute("stroke-width", "2");
-          pulse.setAttribute("class", "solved-ring");
-          group.appendChild(pulse);
-        }
-
-        // Invisible 16px radius hit target for effortless mobile & desktop clicks
-        const hitTarget = document.createElementNS(svgNS, "circle");
-        hitTarget.setAttribute("cx", pinX);
-        hitTarget.setAttribute("cy", place.y);
-        hitTarget.setAttribute("r", "16");
-        hitTarget.setAttribute("fill", "transparent");
-
-        // Crisp Retro Pin Circle
-        const pinCircle = document.createElementNS(svgNS, "circle");
-        pinCircle.setAttribute("cx", pinX);
-        pinCircle.setAttribute("cy", place.y);
-        pinCircle.setAttribute("r", "7.5");
-        pinCircle.setAttribute("fill", isSolved ? "#fbbf24" : pinColor);
-        pinCircle.setAttribute("stroke", "#0d1321");
-        pinCircle.setAttribute("stroke-width", "2.2");
-        pinCircle.setAttribute("class", "pin-body");
-
-        // Inner pixel highlight dot
-        const innerDot = document.createElementNS(svgNS, "circle");
-        innerDot.setAttribute("cx", pinX - 2);
-        innerDot.setAttribute("cy", place.y - 2);
-        innerDot.setAttribute("r", "1.8");
-        innerDot.setAttribute("fill", "#ffffff");
-        innerDot.setAttribute("pointer-events", "none");
-
-        group.appendChild(hitTarget);
-        group.appendChild(pinCircle);
-        group.appendChild(innerDot);
-
-        group.addEventListener("mouseenter", () => {
-          if (!isModalOpen) playBlip();
-        });
-
-        group.addEventListener("click", (e) => {
-          e.stopPropagation();
-          handlePinSelection(place);
-        });
-
-        group.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            handlePinSelection(place);
-          }
-        });
-
-        pinsLayer.appendChild(group);
-      });
-    }
-
-    /**
-     * Evaluates clicked pin against active question with strict modal & double-score guards
-     */
-    function handlePinSelection(clickedPlace) {
+    function handleMapSelection(event) {
       if (isModalOpen || currentIndex >= deck.length) return;
 
       const targetPlace = deck[currentIndex];
-      const isCorrect = clickedPlace.id === targetPlace.id;
+      const targetPoint = indiaMap.createSVGPoint();
+      targetPoint.x = targetPlace.x * 0.82 + 51.3;
+      targetPoint.y = targetPlace.y;
+      const targetOnScreen = targetPoint.matrixTransform(indiaMap.getScreenCTM());
+      const tolerance = window.matchMedia("(max-width: 640px)").matches ? 24 : 18;
+      const isCorrect = Math.hypot(
+        event.clientX - targetOnScreen.x,
+        event.clientY - targetOnScreen.y
+      ) <= tolerance;
 
       if (isCorrect) {
         playWinFanfare();
@@ -478,12 +402,11 @@
         }
 
         updateHUD();
-        renderMapPins();
         showTrueModal(targetPlace, pointsEarned);
       } else {
         playFailBuzz();
         currentQuestionFailedOnce = true;
-        showFalseModal(clickedPlace);
+        showFalseModal();
       }
     }
 
@@ -528,13 +451,13 @@
       openModal();
     }
 
-    function showFalseModal(clickedPlace) {
+    function showFalseModal() {
       modalBanner.className = "px-5 py-4 border-b-4 border-slate-950 flex items-center justify-between bg-rose-600 text-white";
       modalVerdict.textContent = "FALSE! ✖";
       modalTag.textContent = "MISS";
       modalTag.classList.remove("hidden");
 
-      falseMessage.textContent = `You clicked on ${clickedPlace.name}.`;
+      falseMessage.textContent = "That isn't the right location. Try another point on the map.";
 
       trueContent.classList.add("hidden");
       falseContent.classList.remove("hidden");
@@ -589,6 +512,8 @@
       playBlip();
       initGame();
     });
+
+    indiaMap.addEventListener("click", handleMapSelection);
 
     // Keyboard accessibility: Escape closes FALSE modal; Enter triggers modal button
     document.addEventListener("keydown", (e) => {

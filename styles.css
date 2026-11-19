@@ -17,6 +17,11 @@
       overflow-x: hidden;
     }
 
+    body.min-h-screen {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
     .font-pixel {
       font-family: 'Press Start 2P', monospace;
       line-height: 1.5;
@@ -55,6 +60,7 @@
 
     .map-svg {
       max-height: calc(100vh - 100px);
+      cursor: crosshair;
     }
 
     @media (max-width: 640px) {
@@ -63,17 +69,28 @@
       }
 
       .hud-status-row {
-        gap: 5px;
+        gap: 8px;
       }
 
       .hud-controls {
+        gap: 6px;
+      }
+
+      .hud-controls > *,
+      .hud-score {
+        display: inline-flex;
+        min-height: 40px;
+        align-items: center;
+        justify-content: center;
         gap: 4px;
+        padding: 6px 9px;
+        font-size: 12px;
       }
 
       .map-shell {
         max-width: 100%;
         padding: 0;
-        transform: translateY(6px);
+        transform: translateY(0);
       }
 
       .map-svg {
@@ -81,11 +98,21 @@
         max-height: calc(100vh - 110px);
       }
 
-      main {
-        padding-left: 4px;
-        padding-right: 4px;
-        padding-top: 4px;
-        padding-bottom: 4px;
+      .mobile-map-main {
+        justify-content: flex-start;
+        padding-top: 32px;
+        padding-bottom: 8px;
+      }
+
+      .mobile-map-main .map-shell {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .mobile-map-main .map-svg {
+        width: 100%;
+        height: auto;
+        max-height: calc(100vh - 110px);
       }
     }
 
@@ -140,33 +167,3 @@
       stroke-width: 1.2;
     }
 
-    /* Interactive Map Pins */
-    .pin-group {
-      cursor: pointer;
-    }
-
-    .pin-body {
-      transition: transform 0.12s ease;
-      transform-box: fill-box;
-      transform-origin: center;
-    }
-
-    .pin-group:hover .pin-body {
-      transform: scale(1.3);
-    }
-
-    .pin-solved .pin-body {
-      fill: #eab308 !important;
-      stroke: #0d1321 !important;
-    }
-
-    @keyframes pulseRing {
-      0% { r: 8; opacity: 0.85; }
-      100% { r: 17; opacity: 0; }
-    }
-
-    .solved-ring {
-      animation: pulseRing 1.8s infinite ease-out;
-      pointer-events: none;
-    }
-  

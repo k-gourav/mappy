@@ -1,5 +1,5 @@
 module.exports = {
-  content: ["./mappy.html", "./script.js"],
+  content: ["./*.html", "./script.js"],
   theme: {
     extend: {}
   },
