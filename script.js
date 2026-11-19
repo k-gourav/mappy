@@ -1,235 +1,57 @@
-    /**
-     * Complete CBSE Class 10 History & Geography Syllabus Dataset (22 Locations)
-     * Coordinates are tuned to sit distinctly inside their respective states without overlap.
-     */
-    const SYLLABUS_PLACES = [
-      // ================= HISTORY: NATIONALISM IN INDIA (8) =================
-      {
-        id: "calcutta",
-        category: "history",
-        name: "Calcutta (Kolkata), West Bengal",
-        question: "Click on the site of the September 1920 Congress Session.",
-        x: 391,
-        y: 267,
-        importance: "At the Special Calcutta Session (Sept 1920), Mahatma Gandhi convinced other leaders of the need to start a Non-Cooperation Movement in support of Khilafat as well as for Swaraj.",
-        food: "Macher Jhol (fish curry & steamed rice), Kathi Rolls, and Rosogolla."
-      },
-      {
-        id: "nagpur",
-        category: "history",
-        name: "Nagpur, Maharashtra",
-        question: "Click on the site of the December 1920 Congress Session.",
-        x: 225,
-        y: 288,
-        importance: "At the December 1920 Congress Session in Nagpur, a compromise was worked out and the Non-Cooperation programme was formally adopted.",
-        food: "Tarri Poha, spicy Saoji Curry, and Nagpur Orange Barfi."
-      },
-      {
-        id: "madras",
-        category: "history",
-        name: "Madras (Chennai), Tamil Nadu",
-        question: "Click on the site of the 1927 Congress Session.",
-        x: 246,
-        y: 409,
-        importance: "At the 1927 Madras Session, the Indian National Congress passed a historic resolution to boycott the all-British Simon Commission.",
-        food: "Idli, Masala Dosa with Sambar & Chutney, and South Indian Filter Coffee."
-      },
-      {
-        id: "champaran",
-        category: "history",
-        name: "Champaran, Bihar",
-        question: "Click on the site of the Indigo Planters Satyagraha (1917).",
-        x: 322,
-        y: 209,
-        importance: "In 1917, Mahatma Gandhi travelled to Champaran in Bihar to inspire peasants to struggle against the oppressive indigo plantation system.",
-        food: "Litti Chokha (roasted wheat dough balls stuffed with spiced sattu)."
-      },
-      {
-        id: "ahmedabad",
-        category: "history",
-        name: "Ahmedabad, Gujarat",
-        question: "Click on the site of the Cotton Mill Workers Satyagraha (1918).",
-        x: 107,
-        y: 260,
-        importance: "In 1918, Mahatma Gandhi went to Ahmedabad to organise a Satyagraha movement amongst cotton mill workers demanding better wages.",
-        food: "Khaman Dhokla, Khandvi, Fafda-Jalebi, and Gujarati Thali."
-      },
-      {
-        id: "kheda",
-        category: "history",
-        name: "Kheda, Gujarat",
-        question: "Click on the site of the Peasant Satyagraha in Gujarat (1917).",
-        x: 114,
-        y: 264,
-        importance: "In 1917, Gandhi organised a Satyagraha to support the peasants of Kheda district who could not pay revenue due to crop failure and a plague epidemic.",
-        food: "Methi Thepla, Undhiyu, and Bajra Rotla with buttermilk."
-      },
-      {
-        id: "jallianwala",
-        category: "history",
-        name: "Jallianwala Bagh (Amritsar), Punjab",
-        question: "Click on the site of the Jallianwala Bagh Massacre (13 April 1919).",
-        x: 148,
-        y: 131,
-        importance: "On 13 April 1919, General Dyer blocked the exit points and opened fire on a peaceful crowd gathered at Jallianwala Bagh in Amritsar.",
-        food: "Amritsari Kulcha with Chole, Sarson da Saag, and sweet Lassi."
-      },
-      {
-        id: "dandi",
-        category: "history",
-        name: "Dandi, Gujarat",
-        question: "Click on the coastal village where Gandhi broke the Salt Law (1930).",
-        x: 110,
-        y: 294,
-        importance: "On 6 April 1930, Gandhi reached Dandi after a 240-mile march and ceremonially violated the Salt Law, launching the Civil Disobedience Movement.",
-        food: "Surati Locho, Undhiyu, and Khichu."
-      },
+    const STATE_LEARNING_INFO = {
+      "andaman and nicobar islands": { name: "Andaman and Nicobar Islands", type: "Union Territory", capital: "Sri Vijaya Puram (formerly Port Blair)", fact: "An island chain in the Bay of Bengal, east of mainland India." },
+      "andhra pradesh": { name: "Andhra Pradesh", type: "State", capital: "Amaravati", fact: "A southeastern coastal state on the Bay of Bengal." },
+      "arunachal pradesh": { name: "Arunachal Pradesh", type: "State", capital: "Itanagar", fact: "India's easternmost state; it borders Bhutan, China, and Myanmar." },
+      "assam": { name: "Assam", type: "State", capital: "Dispur", fact: "The Brahmaputra River flows through the state." },
+      "bihar": { name: "Bihar", type: "State", capital: "Patna", fact: "The Ganga flows across the fertile plains of Bihar." },
+      "chandigarh": { name: "Chandigarh", type: "Union Territory", capital: "Chandigarh", fact: "It is the shared capital of Punjab and Haryana." },
+      "chhattisgarh": { name: "Chhattisgarh", type: "State", capital: "Raipur", fact: "It was formed from Madhya Pradesh in 2000." },
+      "dadra and nagar haveli and daman and diu": { name: "Dadra and Nagar Haveli and Daman and Diu", type: "Union Territory", capital: "Daman", fact: "The two former union territories merged in 2020." },
+      "delhi": { name: "Delhi", type: "Union Territory", capital: "New Delhi", fact: "The National Capital Territory contains India's national capital." },
+      "goa": { name: "Goa", type: "State", capital: "Panaji", fact: "Goa is India's smallest state by area." },
+      "gujarat": { name: "Gujarat", type: "State", capital: "Gandhinagar", fact: "This western state has a long coastline on the Arabian Sea." },
+      "haryana": { name: "Haryana", type: "State", capital: "Chandigarh", fact: "Haryana shares its capital, Chandigarh, with Punjab." },
+      "himachal pradesh": { name: "Himachal Pradesh", type: "State", capital: "Shimla", fact: "A Himalayan state in northern India." },
+      "jammu and kashmir": { name: "Jammu and Kashmir", type: "Union Territory", capital: "Srinagar (summer), Jammu (winter)", fact: "This union territory lies in the northern Himalayan region." },
+      "jharkhand": { name: "Jharkhand", type: "State", capital: "Ranchi", fact: "It was formed from Bihar in 2000." },
+      "karnataka": { name: "Karnataka", type: "State", capital: "Bengaluru", fact: "The Western Ghats run along much of its western side." },
+      "kerala": { name: "Kerala", type: "State", capital: "Thiruvananthapuram", fact: "It lies between the Arabian Sea and the Western Ghats." },
+      "ladakh": { name: "Ladakh", type: "Union Territory", capital: "Leh", fact: "A high-altitude region in the Himalayas." },
+      "lakshadweep": { name: "Lakshadweep", type: "Union Territory", capital: "Kavaratti", fact: "A group of islands in the Arabian Sea." },
+      "madhya pradesh": { name: "Madhya Pradesh", type: "State", capital: "Bhopal", fact: "Its name means 'central province' because it lies in central India." },
+      "maharashtra": { name: "Maharashtra", type: "State", capital: "Mumbai", fact: "Mumbai lies on its Arabian Sea coast." },
+      "manipur": { name: "Manipur", type: "State", capital: "Imphal", fact: "Loktak Lake, known for its floating phumdis, is here." },
+      "meghalaya": { name: "Meghalaya", type: "State", capital: "Shillong", fact: "Its name means 'abode of clouds'." },
+      "mizoram": { name: "Mizoram", type: "State", capital: "Aizawl", fact: "It shares international borders with Bangladesh and Myanmar." },
+      "nagaland": { name: "Nagaland", type: "State", capital: "Kohima", fact: "Nagaland is in India's northeast and borders Myanmar." },
+      "odisha": { name: "Odisha", type: "State", capital: "Bhubaneswar", fact: "It has a coastline on the Bay of Bengal." },
+      "puducherry": { name: "Puducherry", type: "Union Territory", capital: "Puducherry", fact: "It is made up of four separate regions: Puducherry, Karaikal, Mahe, and Yanam." },
+      "punjab": { name: "Punjab", type: "State", capital: "Chandigarh", fact: "Punjab shares its capital, Chandigarh, with Haryana." },
+      "rajasthan": { name: "Rajasthan", type: "State", capital: "Jaipur", fact: "Rajasthan is India's largest state by area." },
+      "sikkim": { name: "Sikkim", type: "State", capital: "Gangtok", fact: "This small Himalayan state borders Nepal, Bhutan, and China." },
+      "tamil nadu": { name: "Tamil Nadu", type: "State", capital: "Chennai", fact: "It lies on India's southeastern coast along the Bay of Bengal." },
+      "telangana": { name: "Telangana", type: "State", capital: "Hyderabad", fact: "Telangana became a state in 2014." },
+      "tripura": { name: "Tripura", type: "State", capital: "Agartala", fact: "It is bordered by Bangladesh on three sides." },
+      "uttar pradesh": { name: "Uttar Pradesh", type: "State", capital: "Lucknow", fact: "It is India's most populous state (2011 Census)." },
+      "uttarakhand": { name: "Uttarakhand", type: "State", capital: "Dehradun (winter), Gairsain (summer)", fact: "A Himalayan state often called 'Devbhoomi', or Land of the Gods." },
+      "west bengal": { name: "West Bengal", type: "State", capital: "Kolkata", fact: "It shares an international border with Bangladesh." }
+    };
 
-      // ================= GEOGRAPHY: WATER RESOURCES / DAMS (8) =================
-      {
-        id: "salal",
-        category: "dam",
-        name: "Salal Dam, Jammu & Kashmir",
-        question: "Click on the Salal Dam built on the Chenab River.",
-        x: 156,
-        y: 108,
-        importance: "A major run-of-the-river hydroelectric power project constructed on the Chenab River in the Reasi district of Jammu & Kashmir.",
-        food: "Kashmiri Rogan Josh, Rajma Chawal, and saffron Kahwa tea."
-      },
-      {
-        id: "bhakra",
-        category: "dam",
-        name: "Bhakra Nangal Dam (Himachal Pradesh / Punjab)",
-        question: "Click on the Bhakra Nangal Dam on the Sutlej River.",
-        x: 176,
-        y: 133,
-        importance: "Built on the Sutlej River on the Himachal Pradesh–Punjab border, it is one of India's largest multipurpose river valley projects for irrigation and power.",
-        food: "Makki di Roti, Dal Makhani, and traditional Himachali Dham."
-      },
-      {
-        id: "tehri",
-        category: "dam",
-        name: "Tehri Dam, Uttarakhand",
-        question: "Click on the Tehri Dam on the Bhagirathi River.",
-        x: 214,
-        y: 149,
-        importance: "Constructed on the Bhagirathi River in Uttarakhand, Tehri Dam is the tallest dam in India and a key hydroelectric and water supply project.",
-        food: "Kafuli (spiced spinach curry), Aloo ke Gutke, and Bal Mithai."
-      },
-      {
-        id: "ranapratap",
-        category: "dam",
-        name: "Rana Pratap Sagar Dam, Rajasthan",
-        question: "Click on the Rana Pratap Sagar Dam on the Chambal River.",
-        x: 158,
-        y: 232,
-        importance: "Built on the Chambal River at Rawatbhata in southeastern Rajasthan, it is a vital hydroelectricity and irrigation dam.",
-        food: "Dal Baati Churma, Gatte ki Sabzi, and Pyaz Kachori."
-      },
-      {
-        id: "sardar",
-        category: "dam",
-        name: "Sardar Sarovar Dam, Gujarat",
-        question: "Click on the Sardar Sarovar Dam on the Narmada River.",
-        x: 128,
-        y: 277,
-        importance: "Built across the Narmada River in Gujarat, this multipurpose dam supplies water and electricity to Gujarat, Madhya Pradesh, Maharashtra, and Rajasthan.",
-        food: "Kathiyawadi Thali, Sev Tameta nu Shaak, and Kadhi Khichdi."
-      },
-      {
-        id: "hirakud",
-        category: "dam",
-        name: "Hirakud Dam, Odisha",
-        question: "Click on the Hirakud Dam on the Mahanadi River.",
-        x: 313,
-        y: 283,
-        importance: "Built across the Mahanadi River near Sambalpur in Odisha, Hirakud is the longest earthen dam in the world and controls floods in the Mahanadi delta.",
-        food: "Pakhala Bhata (fermented rice), Dalma, and Chhena Poda."
-      },
-      {
-        id: "nagarjuna",
-        category: "dam",
-        name: "Nagarjuna Sagar Dam (Telangana / Andhra Pradesh)",
-        question: "Click on the Nagarjuna Sagar Dam on the Krishna River.",
-        x: 228,
-        y: 356,
-        importance: "A massive masonry dam built across the Krishna River along the Telangana–Andhra Pradesh border for irrigation and hydroelectric generation.",
-        food: "Hyderabadi Biryani, Pesarattu (green gram dosa), and Gongura Pachadi."
-      },
-      {
-        id: "tungabhadra",
-        category: "dam",
-        name: "Tungabhadra Dam, Karnataka",
-        question: "Click on the Tungabhadra Dam in Karnataka.",
-        x: 175,
-        y: 376,
-        importance: "Constructed across the Tungabhadra River (a tributary of the Krishna) in Karnataka, supporting irrigation and power across Karnataka and Andhra Pradesh.",
-        food: "Bisi Bele Bath, Jolada Roti, and Mysore Pak."
-      },
+    function normalizeStateName(name) {
+      return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
 
-      // ================= GEOGRAPHY: AGRICULTURE / CROPS (6) =================
-      {
-        id: "up-crops",
-        category: "crop",
-        name: "Uttar Pradesh (Largest Sugarcane & Major Wheat/Rice Producer)",
-        question: "Click on the largest producer state of Sugarcane (and major Wheat/Rice state).",
-        x: 277,
-        y: 200,
-        importance: "Uttar Pradesh is India's largest producer of Sugarcane and a leading producer of Wheat and Rice due to its fertile Indo-Gangetic alluvial soil.",
-        food: "Awadhi Biryani, Banarasi Chaat, Bedmi Puri, and Agra Petha."
-      },
-      {
-        id: "wb-crops",
-        category: "crop",
-        name: "West Bengal (Largest Jute & Rice Producer)",
-        question: "Click on the largest producer state of Jute and Rice in India.",
-        x: 383,
-        y: 245,
-        importance: "West Bengal leads India in both Rice and Jute ('Golden Fibre') production thanks to the well-drained fertile soils of the Ganga-Brahmaputra delta.",
-        food: "Shorshe Ilish (mustard hilsa), Aloo Posto, and Mishti Doi."
-      },
-      {
-        id: "assam-tea",
-        category: "crop",
-        name: "Assam (Largest Tea Producer)",
-        question: "Click on the largest Tea-producing state in India.",
-        x: 474,
-        y: 212,
-        importance: "Assam is India's largest producer of Tea, blessed with a warm, moist frost-free climate and gentle rolling slopes.",
-        food: "Masor Tenga (tangy fish curry), Khar, Pitha, and Assam Black Tea."
-      },
-      {
-        id: "karnataka-coffee",
-        category: "crop",
-        name: "Karnataka (Largest Coffee Producer)",
-        question: "Click on the largest Coffee-producing state in India.",
-        x: 165,
-        y: 404,
-        importance: "Karnataka produces the largest share of Indian coffee, originally introduced on the Baba Budan Hills and thriving in Coorg (Kodagu).",
-        food: "Ragi Mudde, Benne Dosa, Neer Dosa, and Coorg Filter Coffee."
-      },
-      {
-        id: "kerala-rubber",
-        category: "crop",
-        name: "Kerala (Largest Rubber Producer)",
-        question: "Click on the largest Rubber-producing state in India.",
-        x: 165,
-        y: 443,
-        importance: "Kerala is India's largest producer of natural Rubber, requiring a hot and humid equatorial climate with heavy rainfall.",
-        food: "Appam with Vegetable Stew, Puttu & Kadala Curry, and Banana Chips."
-      },
-      {
-        id: "maharashtra-cotton",
-        category: "crop",
-        name: "Maharashtra (Major Cotton-Producing State)",
-        question: "Click on a major Cotton-producing state in the Deccan black soil belt.",
-        x: 165,
-        y: 292,
-        importance: "Maharashtra (alongside Gujarat) is a leading Cotton producer in India, thriving in the moisture-retentive black regur soil of the Deccan Plateau.",
-        food: "Vada Pav, Pav Bhaji, Misal Pav, and Puran Poli."
-      }
-    ];
-
+    function createStateDeck() {
+      return window.INDIA_STATE_BOUNDARIES.map(({ name }) => {
+        const state = STATE_LEARNING_INFO[normalizeStateName(name)];
+        if (!state) throw new Error(`Missing learning information for map feature: ${name}`);
+        return {
+          ...state,
+          id: normalizeStateName(name),
+          question: `Find ${state.name} on the map.`
+        };
+      });
+    }
     // ================= RETRO 8-BIT WEB AUDIO SYNTHESIZER =================
     let audioCtx = null;
     let isMuted = false;
@@ -330,7 +152,7 @@
      * Initializes or completely resets the game state
      */
     function initGame() {
-      deck = shuffleArray(SYLLABUS_PLACES);
+      deck = shuffleArray(createStateDeck()).slice(0, 5);
       currentIndex = 0;
       score = 0;
       solvedIds.clear();
@@ -353,7 +175,7 @@
         const path = document.createElementNS(svgNS, "path");
         path.setAttribute("d", state.path);
         path.setAttribute("class", "state-path");
-        path.setAttribute("data-state", state.name);
+        path.setAttribute("data-state", normalizeStateName(state.name));
         statesLayer.appendChild(path);
       });
     }
@@ -374,39 +196,29 @@
       questionText.textContent = deck[currentIndex].question;
     }
 
-    /**
-     * Checks whether a map click is close enough to the active location.
-     */
     function handleMapSelection(event) {
       if (isModalOpen || currentIndex >= deck.length) return;
 
-      const targetPlace = deck[currentIndex];
-      const targetPoint = indiaMap.createSVGPoint();
-      targetPoint.x = targetPlace.x * 0.82 + 51.3;
-      targetPoint.y = targetPlace.y;
-      const targetOnScreen = targetPoint.matrixTransform(indiaMap.getScreenCTM());
-      const tolerance = window.matchMedia("(max-width: 640px)").matches ? 24 : 18;
-      const isCorrect = Math.hypot(
-        event.clientX - targetOnScreen.x,
-        event.clientY - targetOnScreen.y
-      ) <= tolerance;
+      const targetState = deck[currentIndex];
+      const selectedPath = event.target.closest(".state-path");
+      const selectedStateId = selectedPath?.dataset.state;
+      const isCorrect = selectedStateId === targetState.id;
 
       if (isCorrect) {
         playWinFanfare();
 
-        // Award +100 on first try, +50 if solved after a retry (prevents double-scoring)
         const pointsEarned = currentQuestionFailedOnce ? 50 : 100;
-        if (!solvedIds.has(targetPlace.id)) {
+        if (!solvedIds.has(targetState.id)) {
           score += pointsEarned;
-          solvedIds.add(targetPlace.id);
+          solvedIds.add(targetState.id);
         }
 
         updateHUD();
-        showTrueModal(targetPlace, pointsEarned);
+        showTrueModal(targetState, pointsEarned);
       } else {
         playFailBuzz();
         currentQuestionFailedOnce = true;
-        showFalseModal();
+        showFalseModal(targetState, selectedStateId);
       }
     }
 
@@ -430,8 +242,8 @@
       modalTag.classList.remove("hidden");
 
       infoName.textContent = place.name;
-      infoImportance.textContent = place.importance;
-      infoFood.textContent = place.food;
+      infoImportance.textContent = place.capital;
+      infoFood.textContent = place.fact;
 
       trueContent.classList.remove("hidden");
       falseContent.classList.add("hidden");
@@ -451,13 +263,18 @@
       openModal();
     }
 
-    function showFalseModal() {
+    function showFalseModal(targetState, selectedStateId) {
       modalBanner.className = "px-5 py-4 border-b-4 border-slate-950 flex items-center justify-between bg-rose-600 text-white";
       modalVerdict.textContent = "FALSE! ✖";
       modalTag.textContent = "MISS";
       modalTag.classList.remove("hidden");
 
-      falseMessage.textContent = "That isn't the right location. Try another point on the map.";
+      const selectedState = selectedStateId
+        ? STATE_LEARNING_INFO[selectedStateId]
+        : null;
+      falseMessage.textContent = selectedState
+        ? `You tapped ${selectedState.name}. Find ${targetState.name} instead.`
+        : `Tap inside a state or union territory to find ${targetState.name}.`;
 
       trueContent.classList.add("hidden");
       falseContent.classList.remove("hidden");
@@ -476,7 +293,7 @@
 
     function showVictoryModal() {
       playWinFanfare();
-      questionText.textContent = "QUEST COMPLETE! All 22 CBSE Class 10 places mastered.";
+      questionText.textContent = "QUEST COMPLETE! You finished all 5 state challenges.";
 
       modalBanner.className = "px-5 py-4 border-b-4 border-slate-950 flex items-center justify-between bg-amber-400 text-slate-950";
       modalVerdict.textContent = "VICTORY! 🏆";

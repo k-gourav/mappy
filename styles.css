@@ -1,12 +1,14 @@
     :root {
-      --bg-outer: #161f30;
-      --bg-panel: #1b263b;
-      --bg-parchment: #f4ecd8;
-      --border-dark: #0d1321;
-      --accent-gold: #fbbf24;
-      --accent-emerald: #10b981;
-      --accent-rose: #f43f5e;
-      --accent-sky: #0284c7;
+      --bg-outer: #102a43;
+      --bg-panel: #183b4e;
+      --bg-parchment: #f4f3e8;
+      --border-dark: #09212f;
+      --accent-gold: #f4c95d;
+      --accent-emerald: #2a9d8f;
+      --accent-rose: #e76f51;
+      --accent-sky: #5da9b2;
+      --map-land: #a3c995;
+      --map-outline: #34675a;
     }
 
     body {
@@ -60,7 +62,12 @@
 
     .map-svg {
       max-height: calc(100vh - 100px);
-      cursor: crosshair;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .map-svg text {
+      fill: #c5d5d9;
     }
 
     @media (max-width: 640px) {
@@ -134,6 +141,34 @@
       box-shadow: 0px 0px 0px var(--border-dark);
     }
 
+    .bg-emerald-400 {
+      background-color: var(--accent-emerald);
+    }
+
+    .bg-emerald-600 {
+      background-color: #1d756b;
+    }
+
+    .bg-amber-400 {
+      background-color: var(--accent-gold);
+    }
+
+    .bg-rose-500 {
+      background-color: var(--accent-rose);
+    }
+
+    .bg-rose-600 {
+      background-color: #c94f50;
+    }
+
+    .text-emerald-400 {
+      color: #67d7c0;
+    }
+
+    .text-amber-400 {
+      color: var(--accent-gold);
+    }
+
     /* Subtle CRT Scanlines Overlay (strictly non-interactive) */
     .crt-overlay {
       position: fixed;
@@ -150,20 +185,21 @@
 
     /* India Map SVG Styling */
     .state-path {
-      fill: #84b994;
-      stroke: #315746;
+      fill: var(--map-land);
+      stroke: var(--map-outline);
       stroke-width: 1.35;
       stroke-linejoin: round;
       transition: fill 0.15s ease;
+      cursor: pointer;
     }
 
     .state-path:hover {
-      fill: #a3d7a1;
+      fill: #c5dda9;
     }
 
     .island-path {
-      fill: #84b994;
-      stroke: #315746;
+      fill: var(--map-land);
+      stroke: var(--map-outline);
       stroke-width: 1.2;
     }
 

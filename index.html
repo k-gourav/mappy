@@ -23,7 +23,7 @@
         <div class="hud-controls flex flex-wrap items-center gap-1.5 sm:gap-2">
           <!-- Progress Badge -->
           <div class="bg-slate-900 border-2 border-slate-950 px-2 py-0.5 rounded text-[10px] font-bold text-sky-300">
-            STAGE <span id="stage-val">1/22</span>
+            STAGE <span id="stage-val">1/5</span>
           </div>
 
           <!-- Mute / Unmute Audio Toggle -->
@@ -45,7 +45,7 @@
       <div class="hud-question pt-1.5 flex items-start gap-2">
         <span class="font-pixel text-[10px] text-emerald-400 mt-0.5 shrink-0">&gt;</span>
         <h1 id="question-text" class="text-lg font-bold text-white leading-snug">
-          Loading mission coordinates...
+          Loading state challenge...
         </h1>
       </div>
     </div>
@@ -56,7 +56,7 @@
     <div class="map-shell w-full relative">
       
       <!-- Responsive SVG Outline Map of India -->
-      <svg id="india-map" viewBox="65 38 450 474" class="map-svg w-full h-auto select-none block mx-auto" role="img" aria-label="Interactive map of India. Click or tap near the requested location.">
+      <svg id="india-map" viewBox="65 38 450 474" class="map-svg w-full h-auto select-none block mx-auto" role="img" aria-label="Interactive map of India. Tap the requested state or union territory.">
         <!-- Sea Labels -->
         <text x="104" y="435" fill="#9c8964" font-size="11" font-weight="bold" letter-spacing="2">ARABIAN</text>
         <text x="115" y="450" fill="#9c8964" font-size="11" font-weight="bold" letter-spacing="2">SEA</text>
@@ -87,17 +87,17 @@
         <!-- TRUE State: Required 3 Information Cards -->
         <div id="true-content" class="space-y-3.5">
           <div class="bg-slate-800/90 border-2 border-slate-700 p-3 rounded">
-            <div class="font-pixel text-[9px] text-amber-400 mb-1">1. NAME OF THE PLACE</div>
+            <div class="font-pixel text-[9px] text-amber-400 mb-1">1. STATE / UNION TERRITORY</div>
             <p id="info-name" class="text-sm sm:text-base font-bold text-white"></p>
           </div>
 
           <div class="bg-slate-800/90 border-2 border-slate-700 p-3 rounded">
-            <div class="font-pixel text-[9px] text-sky-400 mb-1">2. WHY IT IS IMPORTANT</div>
+            <div class="font-pixel text-[9px] text-sky-400 mb-1">2. CAPITAL</div>
             <p id="info-importance" class="text-xs sm:text-sm text-slate-200 leading-relaxed"></p>
           </div>
 
           <div class="bg-slate-800/90 border-2 border-slate-700 p-3 rounded">
-            <div class="font-pixel text-[9px] text-emerald-400 mb-1">3. COMMON FOOD THERE</div>
+            <div class="font-pixel text-[9px] text-emerald-400 mb-1">3. MAP MEMORY TIP</div>
             <p id="info-food" class="text-xs sm:text-sm font-bold text-amber-100"></p>
           </div>
         </div>
@@ -105,19 +105,19 @@
         <!-- FALSE State: Helpful Mistake Message -->
         <div id="false-content" class="hidden">
           <div class="bg-rose-950/60 border-2 border-rose-700/70 p-4 rounded text-center space-y-2">
-            <p class="text-xs uppercase tracking-wider text-rose-300 font-bold">Wrong Coordinates!</p>
+            <p class="text-xs uppercase tracking-wider text-rose-300 font-bold">Wrong State!</p>
             <p id="false-message" class="text-sm sm:text-base font-bold text-white"></p>
-            <p class="text-xs text-slate-300">Check the map carefully and tap a different location.</p>
+            <p class="text-xs text-slate-300">Tap the correct state or union territory to try again.</p>
           </div>
         </div>
 
         <!-- Victory State: End of Game Summary -->
         <div id="victory-content" class="hidden text-center space-y-4 py-2">
-          <div class="font-pixel text-xs sm:text-sm text-amber-400">ALL 22 LOCATIONS MAPPED!</div>
-          <p class="text-sm text-slate-300">You completed the entire CBSE Class X History &amp; Geography Map Quest.</p>
+          <div class="font-pixel text-xs sm:text-sm text-amber-400">5 MAP CHALLENGES COMPLETE!</div>
+          <p class="text-sm text-slate-300">You practiced locating 5 states or union territories and learned their capitals. Play again for a new set.</p>
           <div class="bg-slate-800 border-2 border-amber-400/60 rounded p-4">
             <div class="text-xs text-slate-400 uppercase font-bold">Final Score</div>
-            <div id="final-score-text" class="font-pixel text-lg text-emerald-400 mt-2">0 / 2200</div>
+            <div id="final-score-text" class="font-pixel text-lg text-emerald-400 mt-2">0 / 500</div>
           </div>
         </div>
 
