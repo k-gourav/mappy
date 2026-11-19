@@ -36,6 +36,24 @@
       box-shadow: 4px 4px 0px var(--border-dark);
     }
 
+    #feedback-modal {
+      background-color: rgba(9, 33, 47, 0.42);
+    }
+
+    #feedback-modal .retro-box {
+      max-width: 20rem;
+      max-height: calc(100dvh - 2rem);
+      overflow-y: auto;
+    }
+
+    #feedback-modal #modal-banner {
+      padding: 0.75rem 1rem;
+    }
+
+    #feedback-modal .retro-box > div:last-child {
+      padding: 1rem;
+    }
+
     .retro-parchment {
       background-color: var(--bg-parchment);
       border: 3px solid var(--border-dark);
@@ -106,9 +124,9 @@
       }
 
       .mobile-map-main {
-        justify-content: flex-start;
-        padding-top: 32px;
-        padding-bottom: 8px;
+        justify-content: center;
+        padding-top: 12px;
+        padding-bottom: 12px;
       }
 
       .mobile-map-main .map-shell {
@@ -117,9 +135,10 @@
       }
 
       .mobile-map-main .map-svg {
-        width: 100%;
+        width: 103%;
         height: auto;
         max-height: calc(100vh - 110px);
+        transform: translate(-1.5%, -10px);
       }
     }
 

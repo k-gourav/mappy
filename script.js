@@ -265,7 +265,7 @@
 
     function showFalseModal(targetState, selectedStateId) {
       modalBanner.className = "px-5 py-4 border-b-4 border-slate-950 flex items-center justify-between bg-rose-600 text-white";
-      modalVerdict.textContent = "FALSE! ✖";
+      modalVerdict.textContent = "FALSE!";
       modalTag.textContent = "MISS";
       modalTag.classList.remove("hidden");
 
