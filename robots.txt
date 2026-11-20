@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mappyindia.netlify.app/sitemap.xml
