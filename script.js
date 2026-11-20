@@ -195,6 +195,7 @@
 
     function displayCurrentQuestion() {
       questionText.textContent = `Find ${deck[currentIndex].name}`;
+      questionText.style.visibility = "visible";
     }
 
     function shuffleStateOrder(states) {
@@ -265,6 +266,9 @@
     restartBtn.addEventListener("click", initGame);
     indiaMap.addEventListener("click", handleMapSelection);
 
-    // Boot game safely after window loads
-    window.onload = initGame;
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initGame, { once: true });
+    } else {
+      initGame();
+    }
   
