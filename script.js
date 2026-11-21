@@ -42,7 +42,7 @@
     }
 
     const STATE_REGIONS = [
-      { name: "North India", states: ["haryana", "himachal pradesh", "punjab", "uttar pradesh", "uttarakhand"] },
+      { name: "North India", states: ["haryana", "himachal pradesh", "jammu and kashmir", "punjab", "uttar pradesh", "uttarakhand"] },
       { name: "West-Central India", states: ["chhattisgarh", "goa", "gujarat", "madhya pradesh", "maharashtra", "rajasthan"] },
       { name: "East India", states: ["bihar", "jharkhand", "odisha", "west bengal"] },
       { name: "South India", states: ["andhra pradesh", "karnataka", "kerala", "tamil nadu", "telangana"] },
@@ -73,7 +73,9 @@
         const region = shuffleArray(STATE_REGIONS)[0];
         const candidates = region.states.map((id) => {
           const state = stateById.get(id);
-          if (!state || state.type !== "State") throw new Error(`Invalid state in ${region.name}: ${id}`);
+          if (!state || !["State", "Union Territory"].includes(state.type)) {
+            throw new Error(`Invalid state in ${region.name}: ${id}`);
+          }
           return state;
         });
         states = shuffleArray(candidates).slice(0, stateCount);
