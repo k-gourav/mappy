@@ -132,6 +132,15 @@
       playTone(135, 0.22, "sawtooth", 0.13);
     }
 
+    function announceStateName(name) {
+      if (!("speechSynthesis" in window) || typeof window.SpeechSynthesisUtterance !== "function") return;
+
+      window.speechSynthesis.cancel();
+      const announcement = new window.SpeechSynthesisUtterance(name);
+      announcement.lang = "en-IN";
+      window.speechSynthesis.speak(announcement);
+    }
+
     // ================= GAME STATE & DOM ELEMENTS =================
     let deck = [];
     let currentIndex = 0;
@@ -211,6 +220,7 @@
         window.clearTimeout(answerFeedbackTimer);
         answerFeedbackTimer = null;
       }
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       answerLocked = false;
       document.body.classList.remove("answer-correct", "answer-wrong");
     }
@@ -237,6 +247,7 @@
 
       if (isCorrect) {
         playWinFanfare();
+        announceStateName(targetState.name);
         flashAnswerFeedback("answer-correct", () => {
           currentIndex += 1;
           if (currentIndex === deck.length) {
