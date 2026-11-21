@@ -138,6 +138,10 @@
       window.speechSynthesis.cancel();
       const announcement = new window.SpeechSynthesisUtterance(name);
       announcement.lang = "en-IN";
+      const indianEnglishVoice = window.speechSynthesis.getVoices().find(
+        (voice) => voice.lang.toLowerCase().replace(/_/g, "-") === "en-in"
+      );
+      if (indianEnglishVoice) announcement.voice = indianEnglishVoice;
       window.speechSynthesis.speak(announcement);
     }
 
