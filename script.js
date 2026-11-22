@@ -55,6 +55,28 @@
 
     const LEVEL_STATE_COUNTS = { 1: 2, 2: 3, 3: 4 };
 
+    function createLevelFourDeck(previousStateIds = []) {
+      const states = window.INDIA_STATE_BOUNDARIES
+        .map(({ name }) => {
+          const id = normalizeStateName(name);
+          const state = STATE_LEARNING_INFO[id];
+          return state?.type === "State" ? { ...state, id, question: `Find ${state.name} on the map.` } : null;
+        })
+        .filter(Boolean);
+
+      const previousStateSet = new Set(previousStateIds);
+      let deck = shuffleArray(states);
+
+      if (
+        previousStateSet.size === deck.length &&
+        deck.every((state) => previousStateSet.has(state.id))
+      ) {
+        deck = shuffleArray(states);
+      }
+
+      return { states: deck };
+    }
+
     function createStateDeck(stateCount, previousStateIds = []) {
       const stateById = new Map(window.INDIA_STATE_BOUNDARIES.map(({ name }) => {
         const id = normalizeStateName(name);
@@ -176,7 +198,9 @@
      */
     function initGame() {
       const previousStateIds = deck.map((state) => state.id);
-      const quiz = createStateDeck(LEVEL_STATE_COUNTS[activeLevel], previousStateIds);
+      const quiz = activeLevel === 4
+        ? createLevelFourDeck(previousStateIds)
+        : createStateDeck(LEVEL_STATE_COUNTS[activeLevel], previousStateIds);
       deck = quiz.states;
       currentIndex = 0;
 
@@ -189,9 +213,11 @@
       const statesLayer = document.getElementById("states-layer");
       if (!statesLayer || !window.INDIA_STATE_BOUNDARIES) return;
 
-      const selectedStateColors = new Map(
-        deck.map((state, index) => [state.id, MAP_COLORS[index % MAP_COLORS.length]])
-      );
+      const selectedStateColors = activeLevel === 4
+        ? new Map()
+        : new Map(
+            deck.map((state, index) => [state.id, MAP_COLORS[index % MAP_COLORS.length]])
+          );
       statesLayer.innerHTML = "";
       const svgNS = "http://www.w3.org/2000/svg";
       window.INDIA_STATE_BOUNDARIES.forEach((state) => {
