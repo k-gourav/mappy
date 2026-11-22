@@ -53,6 +53,10 @@
       "#a33f4b", "#a16435", "#8a7a2c", "#347553"
     ];
 
+    const LEVEL_FOUR_SELECTION_COLORS = [
+      "#3478b8", "#8664ad", "#d39a21", "#4b68a8"
+    ];
+
     const LEVEL_STATE_COUNTS = { 1: 2, 2: 3, 3: 4 };
 
     function createLevelFourDeck(previousStateIds = []) {
@@ -296,7 +300,9 @@
     }
 
     function getRandomLevel4Color() {
-      return MAP_COLORS[Math.floor(Math.random() * MAP_COLORS.length)];
+      return LEVEL_FOUR_SELECTION_COLORS[
+        Math.floor(Math.random() * LEVEL_FOUR_SELECTION_COLORS.length)
+      ];
     }
 
     function flashAnswerFeedback(className, afterFlash = null) {

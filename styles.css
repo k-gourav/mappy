@@ -240,18 +240,6 @@
       cursor: pointer;
     }
 
-    .state-path.level4-selected-correct {
-      fill: #10b981 !important;
-      stroke: #064e3b;
-      stroke-width: 3;
-    }
-
-    .state-path.level4-selected-wrong {
-      fill: #ef4444 !important;
-      stroke: #7f1d1d;
-      stroke-width: 3;
-    }
-
     .state-path.level4-selected-random {
       stroke: #111827;
       stroke-width: 3;
