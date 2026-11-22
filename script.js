@@ -202,6 +202,8 @@
     const questionText = document.getElementById("question-text");
     const indiaMap = document.getElementById("india-map");
     const restartBtn = document.getElementById("restart-btn");
+    const rulesBtn = document.getElementById("rules-btn");
+    const rulesDialog = document.getElementById("rules-dialog");
     const levelTabs = [...document.querySelectorAll(".level-tab")];
     const zoomInBtn = document.getElementById("zoom-in-btn");
     const zoomOutBtn = document.getElementById("zoom-out-btn");
@@ -411,6 +413,13 @@
       tab.addEventListener("click", () => selectLevel(Number(tab.dataset.level)));
     });
     restartBtn.addEventListener("click", initGame);
+    rulesBtn.addEventListener("click", () => rulesDialog.showModal());
+    rulesDialog.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        rulesDialog.close();
+      }
+    });
     indiaMap.addEventListener("click", handleMapSelection);
     zoomInBtn.addEventListener("click", () => zoomMap(MAP_ZOOM_STEP));
     zoomOutBtn.addEventListener("click", () => zoomMap(1 / MAP_ZOOM_STEP));

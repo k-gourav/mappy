@@ -64,6 +64,12 @@
       padding-right: 8px;
     }
 
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .level-tabs {
       display: flex;
       gap: 4px;
@@ -94,19 +100,106 @@
 
     .start-over-btn {
       min-height: 36px;
-      padding: 6px 12px;
+      padding: 6px 8px;
       border: 3px solid var(--border-dark);
       border-radius: 4px;
       background: var(--accent-gold);
       box-shadow: 3px 3px 0 var(--border-dark);
       color: #0f172a;
       cursor: pointer;
-      font: 700 14px "Roboto Mono", Consolas, "Courier New", monospace;
+      font: 700 12px "Roboto Mono", Consolas, "Courier New", monospace;
     }
 
     .start-over-btn:active {
       transform: translate(3px, 3px);
       box-shadow: 0 0 0 var(--border-dark);
+    }
+
+    .rules-btn {
+      min-height: 36px;
+      padding: 6px 8px;
+      border: 2px solid var(--border-dark);
+      border-radius: 3px;
+      background: var(--bg-panel);
+      box-shadow: 2px 2px 0 var(--border-dark);
+      color: #f8fafc;
+      cursor: pointer;
+      font: 700 12px "Roboto Mono", Consolas, "Courier New", monospace;
+    }
+
+    .rules-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 var(--border-dark);
+    }
+
+    .rules-dialog {
+      width: min(calc(100% - 32px), 28rem);
+      max-height: calc(100vh - 32px);
+      max-height: calc(100dvh - 32px);
+      padding: 0;
+      border: 3px solid var(--border-dark);
+      border-radius: 4px;
+      background: var(--bg-panel);
+      box-shadow: 6px 6px 0 var(--border-dark);
+      color: #f8fafc;
+      font-family: "Roboto Mono", Consolas, "Courier New", monospace;
+    }
+
+    .rules-dialog::backdrop {
+      background: rgba(4, 10, 20, 0.78);
+    }
+
+    .rules-dialog-content {
+      overflow-y: auto;
+      max-height: calc(100vh - 38px);
+      max-height: calc(100dvh - 38px);
+      padding: 16px;
+    }
+
+    .rules-dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--accent-gold);
+    }
+
+    .rules-dialog-header h2 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .rules-dialog-header form {
+      margin: 0;
+    }
+
+    .rules-close-btn {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--border-dark);
+      border-radius: 3px;
+      background: var(--accent-gold);
+      color: #0f172a;
+      cursor: pointer;
+      font: 700 22px "Roboto Mono", Consolas, "Courier New", monospace;
+      line-height: 1;
+    }
+
+    .rules-dialog-content p {
+      margin: 0 0 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .rules-dialog-content ul {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding-left: 20px;
+      list-style: disc;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     .hud-question {
@@ -186,8 +279,27 @@
         padding-top: 6px;
       }
 
+      .top-controls,
+      .top-actions {
+        gap: 4px;
+      }
+
+      .top-controls {
+        padding-right: 4px;
+      }
+
       .start-over-btn {
+        width: 56px;
         min-height: 44px;
+        padding: 4px 6px;
+        font-size: 11px;
+        white-space: normal;
+      }
+
+      .rules-btn {
+        min-height: 40px;
+        padding: 4px 6px;
+        font-size: 11px;
       }
 
       .level-tab {
@@ -237,22 +349,43 @@
         padding-right: 4px;
       }
 
+      .top-actions {
+        gap: 4px;
+      }
+
       .level-tabs {
         gap: 2px;
       }
 
       .level-tab {
-        min-width: 48px;
-        padding-left: 5px;
-        padding-right: 5px;
+        min-width: 44px;
+        padding-left: 3px;
+        padding-right: 3px;
+        font-size: 10px;
       }
 
       .start-over-btn {
-        width: 64px;
+        width: 44px;
         padding-left: 4px;
         padding-right: 4px;
         font-size: 10px;
-        white-space: normal;
+      }
+
+      .rules-btn {
+        min-width: 44px;
+        padding-left: 4px;
+        padding-right: 4px;
+        font-size: 10px;
+      }
+    }
+
+    @media (max-width: 300px) {
+      .top-controls {
+        flex-wrap: wrap;
+      }
+
+      .top-actions {
+        margin-left: auto;
       }
     }
 
