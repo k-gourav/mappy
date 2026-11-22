@@ -205,53 +205,6 @@
     const rulesBtn = document.getElementById("rules-btn");
     const rulesDialog = document.getElementById("rules-dialog");
     const levelTabs = [...document.querySelectorAll(".level-tab")];
-    const zoomInBtn = document.getElementById("zoom-in-btn");
-    const zoomOutBtn = document.getElementById("zoom-out-btn");
-    const zoomResetBtn = document.getElementById("zoom-reset-btn");
-    const INITIAL_MAP_VIEWBOX = { x: 65, y: 38, width: 450, height: 474 };
-    const MIN_MAP_ZOOM = 1;
-    const MAX_MAP_ZOOM = 4;
-    const MAP_ZOOM_STEP = 1.25;
-    let mapZoom = 1;
-    let mapViewBox = { ...INITIAL_MAP_VIEWBOX };
-
-    function updateMapViewBox() {
-      indiaMap.setAttribute(
-        "viewBox",
-        `${mapViewBox.x} ${mapViewBox.y} ${mapViewBox.width} ${mapViewBox.height}`
-      );
-      zoomInBtn.disabled = mapZoom >= MAX_MAP_ZOOM;
-      zoomOutBtn.disabled = mapZoom <= MIN_MAP_ZOOM;
-      zoomResetBtn.disabled = mapZoom === MIN_MAP_ZOOM;
-    }
-
-    function zoomMap(factor) {
-      const nextZoom = Math.min(MAX_MAP_ZOOM, Math.max(MIN_MAP_ZOOM, mapZoom * factor));
-      const actualFactor = nextZoom / mapZoom;
-      if (actualFactor === 1) return;
-
-      const focus = {
-        x: mapViewBox.x + mapViewBox.width / 2,
-        y: mapViewBox.y + mapViewBox.height / 2
-      };
-      mapViewBox = {
-        x: focus.x - (focus.x - mapViewBox.x) / actualFactor,
-        y: focus.y - (focus.y - mapViewBox.y) / actualFactor,
-        width: INITIAL_MAP_VIEWBOX.width / nextZoom,
-        height: INITIAL_MAP_VIEWBOX.height / nextZoom
-      };
-      mapZoom = nextZoom;
-      if (mapZoom === MIN_MAP_ZOOM) {
-        mapViewBox = { ...INITIAL_MAP_VIEWBOX };
-      }
-      updateMapViewBox();
-    }
-
-    function resetMapZoom() {
-      mapZoom = MIN_MAP_ZOOM;
-      mapViewBox = { ...INITIAL_MAP_VIEWBOX };
-      updateMapViewBox();
-    }
 
     /**
      * Fisher-Yates unbiased shuffle
@@ -421,9 +374,6 @@
       }
     });
     indiaMap.addEventListener("click", handleMapSelection);
-    zoomInBtn.addEventListener("click", () => zoomMap(MAP_ZOOM_STEP));
-    zoomOutBtn.addEventListener("click", () => zoomMap(1 / MAP_ZOOM_STEP));
-    zoomResetBtn.addEventListener("click", resetMapZoom);
 
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", initGame, { once: true });
