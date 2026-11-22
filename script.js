@@ -388,7 +388,7 @@
           currentIndex += 1;
           if (currentIndex === deck.length) {
             deck = activeLevel === 1
-              ? [...deck].reverse()
+              ? [...deck]
               : shuffleStateOrder(deck);
             currentIndex = 0;
           }
