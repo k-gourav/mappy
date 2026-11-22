@@ -101,17 +101,17 @@
     .start-over-btn {
       min-height: 36px;
       padding: 6px 8px;
-      border: 3px solid var(--border-dark);
+      border: 2px solid var(--border-dark);
       border-radius: 4px;
       background: var(--accent-gold);
-      box-shadow: 3px 3px 0 var(--border-dark);
+      box-shadow: 2px 2px 0 var(--border-dark);
       color: #0f172a;
       cursor: pointer;
       font: 700 12px "Roboto Mono", Consolas, "Courier New", monospace;
     }
 
     .start-over-btn:active {
-      transform: translate(3px, 3px);
+      transform: translate(2px, 2px);
       box-shadow: 0 0 0 var(--border-dark);
     }
 
@@ -309,7 +309,7 @@
       .map-shell {
         max-width: 100%;
         padding: 0;
-        transform: translateY(0);
+        transform: translateY(-40px);
       }
 
       .map-svg {
