@@ -132,6 +132,17 @@
       touch-action: manipulation;
     }
 
+    @media (min-width: 641px) {
+      .map-shell {
+        width: min(100%, 52rem);
+      }
+
+      .map-svg {
+        max-height: calc(100vh - 150px);
+        max-height: calc(100dvh - 150px);
+      }
+    }
+
     .map-svg text {
       fill: #c5d5d9;
     }
@@ -209,6 +220,23 @@
       stroke-linejoin: round;
       transition: fill 0.2s ease, filter 0.2s ease;
       cursor: pointer;
+    }
+
+    .state-path.level4-selected-correct {
+      fill: #10b981 !important;
+      stroke: #064e3b;
+      stroke-width: 3;
+    }
+
+    .state-path.level4-selected-wrong {
+      fill: #ef4444 !important;
+      stroke: #7f1d1d;
+      stroke-width: 3;
+    }
+
+    .state-path.level4-selected-random {
+      stroke: #111827;
+      stroke-width: 3;
     }
 
     .island-path {

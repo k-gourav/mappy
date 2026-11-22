@@ -162,10 +162,29 @@
       window.speechSynthesis.cancel();
       const announcement = new window.SpeechSynthesisUtterance(name);
       announcement.lang = "en-IN";
-      const indianEnglishVoice = window.speechSynthesis.getVoices().find(
-        (voice) => voice.lang.toLowerCase().replace(/_/g, "-") === "en-in"
-      );
-      if (indianEnglishVoice) announcement.voice = indianEnglishVoice;
+      announcement.rate = 0.82;
+      announcement.pitch = 1;
+      announcement.volume = 1;
+
+      const voices = window.speechSynthesis.getVoices();
+      const englishVoices = voices.filter((voice) => /^en[-_]/i.test(voice.lang));
+      const preferredVoice =
+        englishVoices.find((voice) =>
+          /^en-(IN|GB)/i.test(voice.lang.replace("_", "-"))
+          && /neural|natural|premium|google|microsoft|siri/i.test(
+            `${voice.name} ${voice.voiceURI || ""}`
+          )
+        ) ||
+        englishVoices.find((voice) =>
+          /^en-(IN|GB)/i.test(voice.lang.replace("_", "-"))
+        ) ||
+        englishVoices.find((voice) => voice.name && !/bad|low/i.test(voice.name)) ||
+        englishVoices[0];
+
+      if (preferredVoice) {
+        announcement.voice = preferredVoice;
+        announcement.lang = preferredVoice.lang;
+      }
       window.speechSynthesis.speak(announcement);
     }
 
@@ -229,7 +248,10 @@
           selectedStateColors.has(stateId) ? "state-path quiz-state" : "state-path"
         );
         path.setAttribute("data-state", stateId);
-        path.style.setProperty("--state-color", selectedStateColors.get(stateId) || "#b8bec7");
+        path.style.setProperty(
+          "--state-color",
+          activeLevel === 4 ? "#b8bec7" : (selectedStateColors.get(stateId) || "#b8bec7")
+        );
         statesLayer.appendChild(path);
       });
     }
@@ -241,8 +263,11 @@
 
     function shuffleStateOrder(states) {
       const shuffled = shuffleArray(states);
-      if (shuffled.every((state, index) => state.id === states[index].id)) {
-        [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+      if (
+        shuffled.every((state, index) => state.id === states[index].id) ||
+        (states.length === 2 && shuffled[0].id === states[0].id)
+      ) {
+        return [shuffled[states.length - 1], ...shuffled.slice(0, states.length - 1)];
       }
       return shuffled;
     }
@@ -255,6 +280,23 @@
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
       answerLocked = false;
       document.body.classList.remove("answer-correct", "answer-wrong");
+      document.querySelectorAll(".level4-selected-correct, .level4-selected-wrong, .level4-selected-random")
+        .forEach((path) => {
+          path.classList.remove("level4-selected-correct", "level4-selected-wrong", "level4-selected-random");
+          path.style.removeProperty("fill");
+        });
+    }
+
+    function clearLevel4SelectionHighlights() {
+      document.querySelectorAll(".level4-selected-correct, .level4-selected-wrong, .level4-selected-random")
+        .forEach((path) => {
+          path.classList.remove("level4-selected-correct", "level4-selected-wrong", "level4-selected-random");
+          path.style.removeProperty("fill");
+        });
+    }
+
+    function getRandomLevel4Color() {
+      return MAP_COLORS[Math.floor(Math.random() * MAP_COLORS.length)];
     }
 
     function flashAnswerFeedback(className, afterFlash = null) {
@@ -263,6 +305,7 @@
       document.body.classList.add(className);
       answerFeedbackTimer = window.setTimeout(() => {
         document.body.classList.remove(className);
+        clearLevel4SelectionHighlights();
         answerFeedbackTimer = null;
         answerLocked = false;
         if (afterFlash) afterFlash();
@@ -277,13 +320,21 @@
       const selectedStateId = selectedPath?.dataset.state;
       const isCorrect = selectedStateId === targetState.id;
 
+      if (activeLevel === 4 && selectedPath) {
+        clearLevel4SelectionHighlights();
+        selectedPath.classList.add("level4-selected-random");
+        selectedPath.style.fill = getRandomLevel4Color();
+      }
+
       if (isCorrect) {
         playWinFanfare();
         announceStateName(targetState.name);
         flashAnswerFeedback("answer-correct", () => {
           currentIndex += 1;
           if (currentIndex === deck.length) {
-            deck = shuffleStateOrder(deck);
+            deck = activeLevel === 1
+              ? [...deck].reverse()
+              : shuffleStateOrder(deck);
             currentIndex = 0;
           }
           displayCurrentQuestion();
