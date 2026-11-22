@@ -163,12 +163,7 @@
       max-height: calc(100vh - 180px);
       max-height: calc(100dvh - 180px);
       cursor: pointer;
-      touch-action: none;
-      cursor: grab;
-    }
-
-    .map-svg:active {
-      cursor: grabbing;
+      touch-action: manipulation;
     }
 
     @media (min-width: 641px) {
