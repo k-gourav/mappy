@@ -123,13 +123,52 @@
     .map-shell {
       max-width: 100%;
       transform: translateY(-4px);
+      overflow: hidden;
+    }
+
+    .map-zoom-controls {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+    }
+
+    .map-zoom-btn {
+      min-width: clamp(20px, 6.5vw, 30px);
+      min-height: clamp(28px, 8vw, 36px);
+      padding: 1px;
+      border: 2px solid var(--border-dark);
+      border-radius: 3px;
+      background: var(--bg-panel);
+      box-shadow: 1px 1px 0 var(--border-dark);
+      color: #f8fafc;
+      cursor: pointer;
+      font: 700 clamp(15px, 4vw, 18px) "Roboto Mono", Consolas, "Courier New", monospace;
+    }
+
+    .map-zoom-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .map-zoom-reset {
+      font-size: clamp(12px, 3.8vw, 16px);
     }
 
     .map-svg {
       max-height: calc(100vh - 180px);
       max-height: calc(100dvh - 180px);
       cursor: pointer;
-      touch-action: manipulation;
+      touch-action: none;
+      cursor: grab;
+    }
+
+    .map-svg:active {
+      cursor: grabbing;
     }
 
     @media (min-width: 641px) {
@@ -181,6 +220,11 @@
       .mobile-map-main .map-shell {
         width: 100%;
         max-width: 100%;
+      }
+
+      .map-zoom-controls {
+        bottom: 4px;
+        left: 0;
       }
 
       .mobile-map-main .map-svg {

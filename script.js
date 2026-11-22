@@ -203,6 +203,62 @@
     const indiaMap = document.getElementById("india-map");
     const restartBtn = document.getElementById("restart-btn");
     const levelTabs = [...document.querySelectorAll(".level-tab")];
+    const zoomInBtn = document.getElementById("zoom-in-btn");
+    const zoomOutBtn = document.getElementById("zoom-out-btn");
+    const zoomResetBtn = document.getElementById("zoom-reset-btn");
+    const INITIAL_MAP_VIEWBOX = { x: 65, y: 38, width: 450, height: 474 };
+    const MIN_MAP_ZOOM = 1;
+    const MAX_MAP_ZOOM = 4;
+    const MAP_ZOOM_STEP = 1.25;
+    let mapZoom = 1;
+    let mapViewBox = { ...INITIAL_MAP_VIEWBOX };
+    let mapPointer = null;
+    let suppressMapClick = false;
+
+    function updateMapViewBox() {
+      indiaMap.setAttribute(
+        "viewBox",
+        `${mapViewBox.x} ${mapViewBox.y} ${mapViewBox.width} ${mapViewBox.height}`
+      );
+      zoomInBtn.disabled = mapZoom >= MAX_MAP_ZOOM;
+      zoomOutBtn.disabled = mapZoom <= MIN_MAP_ZOOM;
+      zoomResetBtn.disabled = mapZoom === MIN_MAP_ZOOM;
+    }
+
+    function zoomMap(factor, focusPoint = null) {
+      const nextZoom = Math.min(MAX_MAP_ZOOM, Math.max(MIN_MAP_ZOOM, mapZoom * factor));
+      const actualFactor = nextZoom / mapZoom;
+      if (actualFactor === 1) return;
+
+      const focus = focusPoint || {
+        x: mapViewBox.x + mapViewBox.width / 2,
+        y: mapViewBox.y + mapViewBox.height / 2
+      };
+      mapViewBox = {
+        x: focus.x - (focus.x - mapViewBox.x) / actualFactor,
+        y: focus.y - (focus.y - mapViewBox.y) / actualFactor,
+        width: INITIAL_MAP_VIEWBOX.width / nextZoom,
+        height: INITIAL_MAP_VIEWBOX.height / nextZoom
+      };
+      mapZoom = nextZoom;
+      if (mapZoom === MIN_MAP_ZOOM) {
+        mapViewBox = { ...INITIAL_MAP_VIEWBOX };
+      }
+      updateMapViewBox();
+    }
+
+    function resetMapZoom() {
+      mapZoom = MIN_MAP_ZOOM;
+      mapViewBox = { ...INITIAL_MAP_VIEWBOX };
+      updateMapViewBox();
+    }
+
+    function getMapPoint(event) {
+      const point = indiaMap.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      return point.matrixTransform(indiaMap.getScreenCTM().inverse());
+    }
 
     /**
      * Fisher-Yates unbiased shuffle
@@ -319,6 +375,10 @@
     }
 
     function handleMapSelection(event) {
+      if (suppressMapClick) {
+        suppressMapClick = false;
+        return;
+      }
       if (answerLocked || currentIndex >= deck.length) return;
 
       const targetState = deck[currentIndex];
@@ -365,6 +425,53 @@
     });
     restartBtn.addEventListener("click", initGame);
     indiaMap.addEventListener("click", handleMapSelection);
+    zoomInBtn.addEventListener("click", () => zoomMap(MAP_ZOOM_STEP));
+    zoomOutBtn.addEventListener("click", () => zoomMap(1 / MAP_ZOOM_STEP));
+    zoomResetBtn.addEventListener("click", resetMapZoom);
+    indiaMap.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      zoomMap(event.deltaY < 0 ? MAP_ZOOM_STEP : 1 / MAP_ZOOM_STEP, getMapPoint(event));
+    }, { passive: false });
+    indiaMap.addEventListener("pointerdown", (event) => {
+      if (event.button !== 0) return;
+      mapPointer = {
+        id: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        viewBox: { ...mapViewBox },
+        dragging: false
+      };
+    });
+    indiaMap.addEventListener("pointermove", (event) => {
+      if (!mapPointer || mapPointer.id !== event.pointerId) return;
+      const deltaX = event.clientX - mapPointer.x;
+      const deltaY = event.clientY - mapPointer.y;
+      if (!mapPointer.dragging && Math.hypot(deltaX, deltaY) > 5) {
+        mapPointer.dragging = true;
+        indiaMap.setPointerCapture(event.pointerId);
+      }
+      if (!mapPointer.dragging) return;
+
+      const rect = indiaMap.getBoundingClientRect();
+      const scale = Math.min(
+        rect.width / mapPointer.viewBox.width,
+        rect.height / mapPointer.viewBox.height
+      );
+      mapViewBox = {
+        ...mapPointer.viewBox,
+        x: mapPointer.viewBox.x - deltaX / scale,
+        y: mapPointer.viewBox.y - deltaY / scale
+      };
+      updateMapViewBox();
+    });
+    indiaMap.addEventListener("pointerup", (event) => {
+      if (!mapPointer || mapPointer.id !== event.pointerId) return;
+      suppressMapClick = mapPointer.dragging;
+      mapPointer = null;
+    });
+    indiaMap.addEventListener("pointercancel", () => {
+      mapPointer = null;
+    });
 
     if (document.readyState === "loading") {
       document.addEventListener("DOMContentLoaded", initGame, { once: true });
