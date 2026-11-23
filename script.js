@@ -49,8 +49,12 @@
       { name: "Northeast India", states: ["arunachal pradesh", "assam", "manipur", "meghalaya", "mizoram", "nagaland", "sikkim", "tripura"] }
     ];
 
-    const MAP_COLORS = [
-      "#a33f4b", "#a16435", "#8a7a2c", "#347553"
+    const MAP_COLOR_PALETTES = [
+      ["#4f86c6", "#8f6bb3", "#3f9b83", "#d26878"],
+      ["#2f8f6b", "#4e79c7", "#b65c9b", "#6979a8"],
+      ["#cc5e66", "#397f9f", "#7d8f35", "#8459a8"],
+      ["#427fca", "#b9537e", "#438c55", "#8465bc"],
+      ["#b84f4f", "#3f938f", "#6e70bd", "#79913c"]
     ];
 
     const LEVEL_FOUR_SELECTION_COLORS = [
@@ -196,6 +200,8 @@
     let deck = [];
     let currentIndex = 0;
     let activeLevel = 1;
+    let activeMapColors;
+    let mapColorPaletteIndex = -1;
     let answerLocked = false;
     let answerFeedbackTimer = null;
 
@@ -223,6 +229,7 @@
      */
     function initGame() {
       const previousStateIds = deck.map((state) => state.id);
+      activeMapColors = getNextMapColorPalette();
       const quiz = activeLevel === 4
         ? createLevelFourDeck(previousStateIds)
         : createStateDeck(LEVEL_STATE_COUNTS[activeLevel], previousStateIds);
@@ -241,7 +248,7 @@
       const selectedStateColors = activeLevel === 4
         ? new Map()
         : new Map(
-            deck.map((state, index) => [state.id, MAP_COLORS[index % MAP_COLORS.length]])
+            deck.map((state, index) => [state.id, activeMapColors[index % activeMapColors.length]])
           );
       statesLayer.innerHTML = "";
       const svgNS = "http://www.w3.org/2000/svg";
@@ -299,6 +306,18 @@
           path.classList.remove("level4-selected-correct", "level4-selected-wrong", "level4-selected-random");
           path.style.removeProperty("fill");
         });
+    }
+
+    function getNextMapColorPalette() {
+      if (mapColorPaletteIndex === -1) {
+        mapColorPaletteIndex = Math.floor(Math.random() * MAP_COLOR_PALETTES.length);
+      } else {
+        mapColorPaletteIndex = (
+          mapColorPaletteIndex + 1 +
+          Math.floor(Math.random() * (MAP_COLOR_PALETTES.length - 1))
+        ) % MAP_COLOR_PALETTES.length;
+      }
+      return MAP_COLOR_PALETTES[mapColorPaletteIndex];
     }
 
     function getRandomLevel4Color() {
